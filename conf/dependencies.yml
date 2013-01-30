@@ -1,0 +1,7 @@
+# Application dependencies
+
+require:
+    - play
+    - play -> crud
+    - play -> secure
+    - play -> securesocial 0.2.6
