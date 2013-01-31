@@ -1,7 +1,25 @@
 #{extends 'main.html' /} #{set title:'Home' /}
 
-<h3>Play WebApp Skeleton</h3>
+<h3>Your Account</h3>
 
+<div class="media">
+  <a class="pull-left" href="#">
+    <img class="media-object img-polaroid" src="${user.avatarUrl}">
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading">${user.displayName}</h4>
+    		<ul>
+			<li>User id: ${user.id.id}</li>
+			<li>Logged in from: ${user.id.provider}</li>
+			<li>Email: ${user.email}</li>
+		</ul>
+  </div>
+</div> 
+
+<!--
 <div class="well">
-...
+	<a href="#" class="btn btn-info">Link Github</a>
+	<a href="#" class="btn btn-info">Link Twitter</a>
+	<a href="#" class="btn btn-info">Link Facebook</a>
 </div>
+-->

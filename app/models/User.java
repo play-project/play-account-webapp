@@ -17,20 +17,36 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA 
  *
  */
-package controllers;
+package models;
 
-import play.mvc.Controller;
-import play.mvc.With;
-import controllers.securesocial.SecureSocial;
-import controllers.securesocial.SecureSocialPublic;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author chamerling
+ *
  */
-@With(SecureSocial.class)
-public class Application extends Controller {
+public class User {
+	/**
+	 * The user id in the Play platform
+	 */
+	public String login;
+
+	public String fullName;
+
+	/**
+	 * If any...
+	 */
+	public String password;
+
+	public String email;
+
+	public String avatarURL;
 	
-	public static void index() {
-		render();
-	}
+	/**
+	 * Providers accounts
+	 */
+	public List<Account> accounts = new ArrayList<Account>();
+
+	public List<String> groups = new ArrayList<String>();
 }

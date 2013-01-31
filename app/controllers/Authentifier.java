@@ -19,18 +19,39 @@
  */
 package controllers;
 
+import play.Logger;
+import play.Play;
+import play.cache.Cache;
+import play.libs.WS;
+import play.libs.WS.HttpResponse;
 import play.mvc.Controller;
-import play.mvc.With;
+import securesocial.provider.ProviderType;
+import securesocial.provider.SocialUser;
+
+import com.google.gson.JsonObject;
+
 import controllers.securesocial.SecureSocial;
-import controllers.securesocial.SecureSocialPublic;
 
 /**
+ * 
  * @author chamerling
+ *
  */
-@With(SecureSocial.class)
-public class Application extends Controller {
+public class Authentifier extends Controller {
 	
-	public static void index() {
-		render();
+	public static void githubAuth() {
+		SecureSocial.authenticate(ProviderType.github);
+	}
+
+	public static void twitterAuth() {
+		SecureSocial.authenticate(ProviderType.twitter);
+	}
+	
+	public static void logout() {
+		SecureSocial.logout();
+	}
+	
+	public static void login() {
+		SecureSocial.login();
 	}
 }

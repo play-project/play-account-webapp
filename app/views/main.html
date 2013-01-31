@@ -37,36 +37,30 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</a>
-				<a class="brand" href="@{Application.index()}">PLAY.skel</a>
+				<a class="brand" href="@{Application.index()}">PLAY.me</a>
 				<div class="nav-collapse" id="main-menu">
+				<!-- 
 					<ul class="nav" id="main-menu-left">
 						<li class="dropdown"><a class="dropdown-toggle"
-							data-toggle="dropdown" href="#">Menu A <b class="caret"></b></a>
+							data-toggle="dropdown" href="#">Me <b class="caret"></b></a>
 							<ul class="dropdown-menu" id="swatch-menu">
-                <li><a href="#">Item A1</a></li>
-			          <li><a href="#">Item A2</a></li>
-							</ul>
-						</li>
-						<li class="dropdown"><a class="dropdown-toggle"
-							data-toggle="dropdown" href="#">Menu B <b class="caret"></b></a>
-							<ul class="dropdown-menu" id="swatch-menu">
-				        <li><a href="#">Item B1</a></li>
-				        <li><a href="#">Item B2</a></li>
-				        <li><a href="#">Item B3</a></li>
+                				<li><a href="#">Account</a></li>
 							</ul>
 						</li>
 					</ul>
+					-->
 					<ul class="nav pull-right" id="main-menu-right">
 						<li class="dropdown" id="preview-menu">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Session <b class="caret"></b></a>
-							#{if session.get("username")}
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+							#{if user}<img src="${user.avatarUrl}" width="20px" height="20px" />#{/if} Me <b class="caret"></b></a>
+							#{if user}
 							<ul class="dropdown-menu">
-								<li><a href="@{Secure.logout}">Logout</a></li>
+								<li><a href="@{Authentifier.logout}">Logout</a></li>
 							</ul>
 							#{/if}
 							#{else}
 							<ul class="dropdown-menu">
-								<li><a href="@{Secure.login}">Login</a></li>
+								<li><a href="@{Authentifier.login}">Login</a></li>
 							</ul>
 							#{/else}
 						</li>

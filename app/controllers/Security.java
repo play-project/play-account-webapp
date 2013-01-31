@@ -19,18 +19,25 @@
  */
 package controllers;
 
-import play.mvc.Controller;
-import play.mvc.With;
-import controllers.securesocial.SecureSocial;
-import controllers.securesocial.SecureSocialPublic;
+import play.Play;
+import models.*;
 
 /**
+ * 
  * @author chamerling
+ *
  */
-@With(SecureSocial.class)
-public class Application extends Controller {
-	
-	public static void index() {
-		render();
+public class Security extends Secure.Security {
+
+	/**
+	 * TODO : USe Secure Social...
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	static boolean authenticate(String username, String password) {
+		return Play.configuration.getProperty("secure.admin.username").equals(username)
+				&& Play.configuration.getProperty("secure.admin.password").equals(password);
 	}
+
 }
