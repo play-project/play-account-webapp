@@ -3,6 +3,8 @@
  */
 package models;
 
+import java.io.Serializable;
+
 /**
  * An external authentication provider. This is used to login using external
  * oauth providers such as twitter, google, github, facebook....
@@ -10,7 +12,7 @@ package models;
  * @author chamerling
  * 
  */
-public class Account {
+public class Account implements Serializable {
 
 	/**
 	 * The account provider (twitter, facebook, ...). We support only one auth

@@ -1,0 +1,59 @@
+#{extends 'main.html' /} #{set title:'Home' /}
+
+<h3>My account</h3>
+
+<div class="media">
+  <a class="pull-left" href="#">
+    <img class="media-object img-polaroid" src="${playuser.avatarURL}">
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading">${playuser.fullName} - ${playuser.login}</h4>
+    	<ul>
+			<li>ID: ${playuser.id}</li>
+			<li><a href="mailto:${playuser.email}">${playuser.email}</a></li>
+			<li>API Token : ${playuser.apiToken} </li>
+		</ul>
+  </div>
+</div> 
+
+<h4>Linked Accounts</h4>
+#{list playuser.accounts, as : 'account'}
+<div class="well">
+<div class="media">
+  <a class="pull-left" href="#">
+    <img width="80px" height="80px" class="media-object img-polaroid" src="${account.avatarURL}">
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading">${account.fullName}</h4>
+    <ul>
+			<li>Login : ${account.login}</li>
+			<li>Provider : ${account.provider}</li>
+			<li>Email: <a href="mailto:${account.email}">${account.email}</a></li>
+		</ul>
+  </div>
+</div>
+<a href="@{Application.unlinkAccount(account.provider)}" class="btn btn-info">Unlink ${account.provider}</a>
+ 
+</div>
+#{/list}
+
+<div class="well">
+	<p class="text-info">You can link your PLAY account with external services for additional features:</p>
+	<a href="@{Application.linkAccount('github')}" class="btn btn-info">Link Github</a>
+	<a href="@{Application.linkAccount('twitter')}" class="btn btn-info">Link Twitter</a>
+	<a href="@{Application.linkAccount('facebook')}" class="btn btn-info">Link Facebook</a>
+	<a href="@{Application.linkAccount('googleoauth2')}" class="btn btn-info">Link Google</a>
+</div>
+
+<!-- 
+<h4>Your Groups</h4>
+<ul>
+#{list playuser.groups, as : 'group'}
+	<li><a href="@{Application.group(group)}">${group}</a></li>
+#{/list}
+</ul>
+
+-->
+
+<br>
+

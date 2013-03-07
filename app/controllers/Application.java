@@ -19,18 +19,157 @@
  */
 package controllers;
 
+import models.Account;
+import models.User;
+import play.cache.Cache;
+import play.data.validation.Required;
+import play.mvc.Before;
 import play.mvc.Controller;
-import play.mvc.With;
+import securesocial.provider.ProviderType;
+import utils.Gravatar;
+import client.UserClient;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+
 import controllers.securesocial.SecureSocial;
-import controllers.securesocial.SecureSocialPublic;
 
 /**
  * @author chamerling
  */
-@With(SecureSocial.class)
+// @With(SecureSocial.class)
 public class Application extends Controller {
 	
+	public static final String PLAYUSER = "playuser";
+	
+	public static final String PLAYUSER_ID = "playuserid";
+
+	/**
+	 * Check authentification on all request TODO : Cache user so we do not call
+	 * the backend each time
+	 */
+	@Before(unless = { "signin", "doLogin" })
+	private static void checkAuthentification() {
+		// get ID from secure social plugin
+		String uid = session.get(PLAYUSER_ID);
+		if (uid == null) {
+			System.out.println("No play user found...");
+			signin(null);
+		}
+
+		// get the user from the store. TODO Can also get it from the cache...
+		User user = null;
+		if (Cache.get(uid) == null) {
+			user = UserClient.getUserFromID(uid);
+			Cache.set(uid, user);
+		} else {
+			user = (User) Cache.get(uid);
+		}
+		
+		if (user == null) {
+			System.out.println("Problem while getting user from store...");
+			Authentifier.logout();
+		}
+		
+		if (user.avatarURL == null) {
+			user.avatarURL = Gravatar.get(user.email, 100);
+		}
+
+		// push the user object in the request arguments for later display...
+		renderArgs.put(PLAYUSER, user);
+	}
+
 	public static void index() {
 		render();
+	}
+
+	public static void signin(String username) {
+		render(username);
+	}
+
+	public static void doLogin(
+			@Required(message = "Username is required") String username,
+			@Required(message = "Password is required") String password) {
+		
+		validation.required(username);
+		validation.required(password);
+		
+		if (validation.hasErrors()) {
+			params.flash();
+			validation.keep();
+			signin(username);
+		}
+		
+		User user = UserClient.userpass(username, password);
+		if (user == null) {
+			flash.error("Bad username/password");
+			signin(username);
+		}
+		
+		// user has been found, let's push some stuff in the session and in the cache...
+		session.put(PLAYUSER_ID, user.id);
+		Cache.add(user.id, user);
+		
+		user();
+	}
+	
+	/**
+	 * Add social account to the current account
+	 * 
+	 * @param provider
+	 */
+	public static final void linkAccount(final String provider) {
+		// TODO : Check that the provider is supported...
+		
+		User current = getUser();
+		if (Collections2.filter(current.accounts, new Predicate<Account>() {
+			public boolean apply(Account account) {
+				return account.provider != null && account.provider.equalsIgnoreCase(provider);
+			};
+		}).size() > 0) {
+			flash.error("'%s' is already linked with your account", provider);
+			user();
+		}
+		SecureSocial.authenticate(ProviderType.valueOf(provider));
+	}
+	
+	/**
+	 * Remove account from the current account
+	 * 
+	 * @param provider
+	 */
+	public static final void unlinkAccount(String provider) {
+		// TODO
+		user();
+	}
+
+	public static void user() {
+		render();
+	}
+
+	public static void group(String name) {
+		render(name);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private static User getUser() {
+		String uid = session.get(PLAYUSER_ID);
+		if (uid == null) {
+			System.out.println("No play user found...");
+			signin(null);
+		}
+
+		// get the user from the store. TODO Can also get it from the cache...
+		User user = null;
+		if (Cache.get(uid) == null) {
+			user = UserClient.getUserFromID(uid);
+			Cache.set(uid, user);
+		} else {
+			user = (User) Cache.get(uid);
+		}
+		return user;
 	}
 }

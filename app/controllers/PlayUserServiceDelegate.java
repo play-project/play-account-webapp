@@ -20,27 +20,20 @@
 package controllers;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import models.Account;
 import models.User;
-import play.Play;
-import play.libs.WS;
-import play.libs.WS.HttpResponse;
-import play.libs.WS.WSRequest;
+import play.cache.Cache;
 import play.mvc.Controller;
 import securesocial.provider.ProviderType;
 import securesocial.provider.SocialUser;
 import securesocial.provider.UserId;
 import securesocial.provider.UserServiceDelegate;
+import client.UserClient;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 
 /**
  * 
@@ -53,16 +46,10 @@ public class PlayUserServiceDelegate extends Controller implements
 	public SocialUser find(final UserId user) {
 		// search in the user service if a user with login and provider is
 		// already registered
-		String endpoint = Play.configuration
-				.getProperty("play.userservice.url");
-		WSRequest request = WS.url(endpoint
-				+ "users/query?login=%s&provider=%s", user.id,
+		System.out.println("Looking at a user in the registry..." + user);
+		User u = UserClient.getUserFromProvider(user.id,
 				user.provider.toString());
-		HttpResponse response = request.get();
-		if (response.getStatus() == 200) {
-			JsonElement json = response.getJson();
-			Gson gson = new Gson();
-			User u = gson.fromJson(json, User.class);
+		if (u != null) {
 			List<Account> filtered = new ArrayList<Account>(
 					Collections2.filter(u.accounts, new Predicate<Account>() {
 						public boolean apply(Account input) {
@@ -70,7 +57,7 @@ public class PlayUserServiceDelegate extends Controller implements
 									.toString().toLowerCase());
 						}
 					}));
-			
+
 			if (filtered != null && filtered.size() == 1) {
 				Account account = filtered.get(0);
 				SocialUser result = new SocialUser();
@@ -78,16 +65,18 @@ public class PlayUserServiceDelegate extends Controller implements
 				result.avatarUrl = account.avatarURL;
 				result.displayName = account.fullName;
 				result.email = account.email;
-				
+
 				UserId id = new UserId();
 				id.id = account.login;
 				id.provider = ProviderType.valueOf(account.provider);
 				result.id = id;
 				result.secret = account.secret;
 				result.token = account.token;
+
+				session.put(Application.PLAYUSER_ID, u.id);
+
 				return result;
 			}
-
 			return null;
 		}
 		return null;
@@ -120,42 +109,108 @@ public class PlayUserServiceDelegate extends Controller implements
 	public void disableResetCode(String username, String uuid) {
 	}
 
-	public void save(SocialUser user) {
-		// called at each login. Do not save the user if it is already available in the store...
+	public void save(final SocialUser user) {
+		System.out.println("Save social user : " + user);
+		// called at each login. Do not save the user if it is already available
+		// in the store...
+
+		// TODO
+		// if not logged in...
+
 		if (this.find(user.id) != null) {
 			System.out.println("Already available...");
 			// FIXME : at least we can update the user information if needed...
 			return;
 		}
 
-		Gson gson = new Gson();
-		User bean = new User();
-		bean.login = user.id.id;
-		bean.password = "noop";
-		Account account = new Account();
-		account.email = user.email;
-		account.accessToken = user.accessToken;
-		account.avatarURL = user.avatarUrl;
-		account.fullName = user.displayName;
-		account.login = user.id.id;
-		account.provider = user.id.provider.toString();
-		account.secret = user.secret;
-		account.token = user.token;
-		bean.accounts.add(account);
+		// if we are already logged in and if the current account is not yet
+		// linked,
+		// let's add it to the current user account.
+		if (session.get(Application.PLAYUSER_ID) != null) {
 
-		String endpoint = Play.configuration
-				.getProperty("play.userservice.url");
-		WSRequest request = WS.url(endpoint + "users")
-				.setHeader("ContentType", "application/json").mimeType("application/json")
-				.body(gson.toJson(bean));
-		HttpResponse response = request.post();
-		if (response.getStatus() == 201) {
-			System.out.println("Saved!");
-			// TODO
+			// get the user
+			User playuser = null;
+			if (Cache.get(session.get(Application.PLAYUSER_ID)) != null) {
+				playuser = (User) Cache.get(session
+						.get(Application.PLAYUSER_ID));
+			} else {
+				// get the user from the store
+				playuser = UserClient.getUserFromID(session
+						.get(Application.PLAYUSER_ID));
+				Cache.set(session.get(Application.PLAYUSER_ID), playuser);
+			}
+
+			// check if the social account is already registered in the playuser
+			List<Account> filtered = new ArrayList<Account>(
+					Collections2.filter(playuser.accounts,
+							new Predicate<Account>() {
+								public boolean apply(Account account) {
+
+									if (account.provider
+											.equalsIgnoreCase(user.id.provider
+													.toString())) {
+										// / check OAUTH version
+
+										if (user.authMethod.toString()
+												.equalsIgnoreCase("oauth1")) {
+											System.out.println("OAuth1");
+											return account.secret != null
+													&& account.token != null
+													&& account.secret
+															.equals(user.secret)
+													&& account.token
+															.equals(user.token);
+
+										} else if (user.authMethod.toString()
+												.equalsIgnoreCase("oauth2")) {
+											System.out.println("OAuth2");
+											return account.accessToken != null
+													&& account.accessToken
+															.equals(user.accessToken);
+										} else {
+											System.out.println("Unknow auth method..." + user.authMethod);
+											return false;
+										}
+
+									} else {
+										System.out
+												.println("!provider : Account "
+														+ account.provider
+														+ " : user "
+														+ user.id.provider);
+										return false;
+									}
+								}
+							}));
+
+			if (filtered != null && filtered.size() == 1) {
+				// already have the account linked
+				System.out
+						.println("Social Account has been found in the current user");
+			} else {
+				System.out
+						.println("Social Account has NOT been found in the current user, let's add it");
+				Account account = new Account();
+				account.email = user.email;
+				account.accessToken = user.accessToken;
+				account.avatarURL = user.avatarUrl;
+				account.fullName = user.displayName;
+				account.login = user.id.id;
+				account.provider = user.id.provider.toString().toLowerCase();
+				account.secret = user.secret;
+				account.token = user.token;
+				User result = UserClient.addAccount(playuser, account);
+				
+				// fech user from the store...
+				playuser = UserClient.getUserFromID(session
+						.get(Application.PLAYUSER_ID));
+				Cache.set(session.get(Application.PLAYUSER_ID), playuser);
+
+			}
+
 		} else {
-			System.out.println("Not Saved!");
-			// TODO
+			// not logged in, TODO...
+			System.out.println("Not logged in, do nothing...");
 		}
-
 	}
 }

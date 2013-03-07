@@ -19,14 +19,21 @@
  */
 package models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author chamerling
- *
+ * 
  */
-public class User {
+public class User implements Serializable {
+
+	/**
+	 * The user id
+	 */
+	public String id;
+
 	/**
 	 * The user id in the Play platform
 	 */
@@ -43,10 +50,25 @@ public class User {
 
 	public String avatarURL;
 	
+	public String apiToken;
+
 	/**
 	 * Providers accounts
 	 */
 	public List<Account> accounts = new ArrayList<Account>();
 
 	public List<String> groups = new ArrayList<String>();
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", login=" + login + ", fullName=" + fullName
+				+ ", password=" + password + ", email=" + email
+				+ ", avatarURL=" + avatarURL + ", accounts=" + accounts
+				+ ", groups=" + groups + "]";
+	}
 }

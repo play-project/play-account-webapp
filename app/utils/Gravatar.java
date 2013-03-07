@@ -17,44 +17,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA 
  *
  */
-package controllers;
+package utils;
 
-import play.Logger;
-import play.Play;
-import play.cache.Cache;
-import play.libs.WS;
-import play.libs.WS.HttpResponse;
-import play.mvc.Controller;
-import securesocial.provider.ProviderType;
-import securesocial.provider.SocialUser;
-
-import com.google.gson.JsonObject;
-
-import controllers.securesocial.SecureSocial;
+import play.libs.Codec;
 
 /**
- * 
  * @author chamerling
  *
  */
-public class Authentifier extends Controller {
+public class Gravatar {
 	
-	/**
-	 * 
-	 * @param provider
-	 */
-	public static void loginWith(String provider) {
-		SecureSocial.authenticate(ProviderType.valueOf(provider));		
+	public static String get(String email, int size) {
+		StringBuffer url = new StringBuffer("http://www.gravatar.com/avatar/");
+		url.append(Codec.hexMD5(email));
+		if (size > 0) {
+			url.append(size);
+		}
+		return url.toString();
 	}
-	
-	public static void logout() {
-		String playuserID = session.get(Application.PLAYUSER_ID);
-		Cache.delete(playuserID);
-		session.remove(Application.PLAYUSER_ID);
-		SecureSocial.logout();
-	}
-	
-	public static void login() {
-		SecureSocial.login();
-	}
+
 }

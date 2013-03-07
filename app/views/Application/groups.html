@@ -1,0 +1,61 @@
+#{extends 'main.html' /} #{set title:'Groups' /}
+
+<h3>Your groups</h3>
+
+<div class="media">
+  <a class="pull-left" href="#">
+    <img class="media-object img-polaroid" src="${playuser.avatarURL}">
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading">${playuser.fullName}</h4>
+    	<ul>
+			<li>ID: ${playuser.id}</li>
+		</ul>
+  </div>
+</div> 
+
+<h4>Linked Accounts</h4>
+#{list playuser.accounts, as : 'account'}
+<div class="well">
+<div class="media">
+  <a class="pull-left" href="#">
+    <img class="media-object img-polaroid" src="${user.avatarUrl}">
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading">${account.fullName}</h4>
+    	<ul>
+			<li>Login : ${account.login}</li>
+			<li>Provider : ${account.provider}</li>
+			<li>Email: <a href="mailto:${account.email}">${account.email}</a></li>
+		</ul>
+  </div>
+</div>
+<a href="#" class="btn btn-info">Unlink ${account.provider}</a>
+ 
+</div>
+#{/list}
+
+
+<h4>Login information</h4>
+
+<div class="media">
+  <a class="pull-left" href="#">
+    <img class="media-object img-polaroid" src="${user.avatarUrl}">
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading">${user.displayName}</h4>
+    		<ul>
+			<li>User id: ${user.id.id}</li>
+			<li>Logged in from: ${user.id.provider}</li>
+			<li>Email: <a href="mailto:${user.email}">${user.email}</a></li>
+		</ul>
+  </div>
+</div> 
+
+<br>
+
+<div class="well">
+	<a href="#" class="btn btn-info">Link Github</a>
+	<a href="#" class="btn btn-info">Link Twitter</a>
+	<a href="#" class="btn btn-info">Link Facebook</a>
+</div>

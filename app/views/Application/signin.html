@@ -1,0 +1,29 @@
+#{extends 'main.html' /} #{set title:'Home' /}
+
+<div class="row">
+	<div class="span4">&nbsp;</div>
+	<div class="span4">
+		<div class="span3 well">
+		  	<legend>Login</legend>
+		    <form accept-charset="UTF-8" action="@{Application.doLogin()}" method="post">
+				<input class="span3" name="username" placeholder="Username" type="text"> 
+		        <input class="span3" name="password" placeholder="Password" type="password"> 
+		        <button class="btn btn-warning" type="submit">Login</button>&nbsp;<a href="@{Registration.register()}" class="btn btn-warning" type="submit">Register</a>
+		    </form>
+		    <a href="">Forgot password?</a>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="span4">&nbsp;</div>
+	<div class="span4">
+		<div class="span3 well">
+		  	<legend>Sign In</legend>
+		    <a href="@{Authentifier.loginWith('github')}" class="btn btn-info">with Github</a>
+		    <a href="@{Authentifier.loginWith('twitter')}" class="btn btn-info">with Twitter</a>
+		    <a href="@{Authentifier.loginWith('googleoauth2')}" class="btn btn-info">with Google</a>
+		    <a href="@{Authentifier.loginWith('facebook')}" class="btn btn-info">with Facebook</a>
+		</div>
+	</div>
+</div>

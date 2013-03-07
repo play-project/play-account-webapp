@@ -30,7 +30,7 @@ import models.*;
 public class Security extends Secure.Security {
 
 	/**
-	 * TODO : USe Secure Social...
+	 * TODO : Use Secure Social...
 	 * @param username
 	 * @param password
 	 * @return

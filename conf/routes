@@ -2,11 +2,22 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-#Import Secure
-*      /                  module:secure
-
 # Home page
 GET     /                                       Application.index
+GET     /me                                     Application.user
+GET     /signin                                 Application.signin
+POST    /login                                  Application.doLogin
+GET     /account/link							Application.linkAccount
+GET     /account/unlink							Application.unlinkAccount
+
+# Registration
+GET     /register                               Registration.register
+POST    /register                               Registration.doRegister
+
+# Auth
+GET		/login									Authentifier.loginWith
+GET		/logmeout								Authentifier.logout
+GET		/logmein								Authentifier.login
 
 # Websocket
 WS      /websocket/backgroundMessage            BackgroundTaskWebSocket.pushNewMessage
@@ -20,12 +31,11 @@ GET     /public/                                staticDir:public
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}
 
+#Import Secure
+*      /                  module:secure
+
 # Import CRUD routes
 *      /admin              module:crud
 
 *		/auth              module:securesocial
 
-GET		/twitterauth					Authentifier.twitterAuth
-GET		/githubauth						Authentifier.githubAuth
-GET		/logmeout						Authentifier.logout
-GET		/logmein						Authentifier.login

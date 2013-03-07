@@ -1,0 +1,28 @@
+#{extends 'main.html' /} #{set title:'Register' /}
+
+#{ifErrors}
+	<div class="alert-message error">
+        <a class="close" href="#">&times;</a>
+        <p><strong>Some values are invalid, please fix them!</strong></p>
+        <ul>
+         #{errors}
+       		<li>${error}</li>
+   		#{/errors}
+   		</ul>
+      </div>
+#{/ifErrors}
+
+<div class="row">
+	<div class="span4">&nbsp;</div>
+	<div class="span3 well">
+	  	<legend>New to Play? Sign up!</legend>
+	    #{form @Registration.doRegister()}
+			<input class="span3" name="fullName" placeholder="Full Name" type="text" value="${fullName}"> 
+	        <input class="span3" name="username" placeholder="Username" type="text" value="${username}">
+	        <input class="span3" name="email" placeholder="Email" type="text" value="${email}"> 
+	        <input class="span3" name="password" placeholder="Password" type="password" value="${password}"> 
+	        <button class="btn btn-warning" type="submit">Sign up!</button>&nbsp;<a class="btn" href="@{Application.index()}">Cancel</a>
+	    #{/form}
+	</div>
+	<div class="span4">&nbsp;</div>
+</div>
