@@ -19,6 +19,13 @@ GET		/login									Authentifier.loginWith
 GET		/logmeout								Authentifier.logout
 GET		/logmein								Authentifier.login
 
+# Groups
+GET     /groups									Application.groups
+GET     /groups/{name}							Application.group
+GET     /groups/{name}/join                     Application.joinGroup
+GET     /groups/{name}/leave                    Application.leaveGroup
+
+
 # Websocket
 WS      /websocket/backgroundMessage            BackgroundTaskWebSocket.pushNewMessage
 

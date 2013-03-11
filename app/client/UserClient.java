@@ -3,20 +3,23 @@
  */
 package client;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import models.Account;
 import models.ApplicationException;
 import models.Group;
+import models.Groups;
 import models.User;
+import play.Logger;
 import play.Play;
 import play.libs.WS;
 import play.libs.WS.HttpResponse;
 import play.libs.WS.WSRequest;
 import securesocial.provider.SocialUser;
 
-import com.google.common.collect.Collections2;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
@@ -30,9 +33,7 @@ public class UserClient {
 	}
 
 	public static User getUserFromID(String id) throws ApplicationException {
-		String endpoint = Play.configuration
-				.getProperty("play.userservice.url");
-		WSRequest request = WS.url(endpoint + "users/%s", id);
+		WSRequest request = WS.url(getEndpoint() + "users/%s", id);
 
 		HttpResponse response = null;
 		try {
@@ -43,17 +44,17 @@ public class UserClient {
 		
 		if (response.getStatus() == 200) {
 			JsonElement json = response.getJson();
+			System.out.println(response.toString());
 			Gson gson = new Gson();
 			return gson.fromJson(json, User.class);
 		} else {
+			Logger.debug("Output status %s", response.getStatusText());
 			return null;
 		}
 	}
 
 	public static User userpass(String username, String password) throws ApplicationException {
-		String endpoint = Play.configuration
-				.getProperty("play.userservice.url");
-		WSRequest request = WS.url(endpoint
+		WSRequest request = WS.url(getEndpoint()
 				+ "users/basicauth?login=%s&password=%s", username, password);
 
 		HttpResponse response = null;
@@ -68,16 +69,15 @@ public class UserClient {
 			Gson gson = new Gson();
 			return gson.fromJson(json, User.class);
 		} else {
-			System.out.println(response.toString());
+			Logger.debug("Output status %s", response.getStatusText());
 			return null;
 		}
 	}
 
 	public static User getUserFromProvider(String login, String provider) throws ApplicationException {
-		String endpoint = Play.configuration
-				.getProperty("play.userservice.url");
-		WSRequest request = WS.url(endpoint
+		WSRequest request = WS.url(getEndpoint()
 				+ "users/query?login=%s&provider=%s", login, provider);
+		
 		HttpResponse response = null;
 		try {
 			response = request.get();
@@ -89,6 +89,8 @@ public class UserClient {
 			JsonElement json = response.getJson();
 			Gson gson = new Gson();
 			return gson.fromJson(json, User.class);
+		} else {
+			Logger.debug("Output status %s", response.getStatusText());
 		}
 		return null;
 	}
@@ -102,9 +104,7 @@ public class UserClient {
 		boolean result = true;
 		Gson gson = new Gson();
 
-		String endpoint = Play.configuration
-				.getProperty("play.userservice.url");
-		WSRequest request = WS.url(endpoint + "users")
+		WSRequest request = WS.url(getEndpoint() + "users")
 				.setHeader("ContentType", "application/json")
 				.mimeType("application/json").body(gson.toJson(user));
 
@@ -115,9 +115,9 @@ public class UserClient {
 			throw new ApplicationException("Can not connect to service");
 		}		
 		if (response.getStatus() == 201) {
-			System.out.println("Saved!");
+			Logger.debug("Saved!");
 		} else {
-			System.out.println("Not Saved!");
+			Logger.debug("Not saved");
 			result = false;
 		}
 		return result;
@@ -131,7 +131,6 @@ public class UserClient {
 	 * @return
 	 */
 	public static User addAccount(User user, Account account) throws ApplicationException {
-		System.out.println("Add acount to user");
 		User result = null;
 		
 		Gson gson = new Gson();
@@ -153,7 +152,7 @@ public class UserClient {
 			// updated, got the user as response
 			result = gson.fromJson(response.getJson(), User.class);
 		} else {
-			System.out.println(response.getStatus());
+			Logger.debug("Status %s", response.getStatusText());
 		}
 
 		return result;
@@ -166,8 +165,7 @@ public class UserClient {
 	 * @return
 	 */
 	public static boolean exists(String username) throws ApplicationException {
-		String endpoint = getEndpoint();
-		WSRequest request = WS.url(endpoint + "users/login/" + username);
+		WSRequest request = WS.url(getEndpoint() + "users/login/" + username);
 
 		HttpResponse response = null;
 
@@ -176,8 +174,6 @@ public class UserClient {
 		} catch (RuntimeException e) {
 			throw new ApplicationException("Can not connect to service");
 		}
-		System.out.println(response.getString());
-		System.out.println(response.getStatus());
 		return response.getStatus() == 200;
 	}
 
@@ -205,9 +201,7 @@ public class UserClient {
 		account.token = user.token;
 		bean.accounts.add(account);
 
-		String endpoint = Play.configuration
-				.getProperty("play.userservice.url");
-		WSRequest request = WS.url(endpoint + "users")
+		WSRequest request = WS.url(getEndpoint() + "users")
 				.setHeader("ContentType", "application/json")
 				.mimeType("application/json").body(gson.toJson(bean));
 
@@ -219,18 +213,16 @@ public class UserClient {
 		}
 		
 		if (response.getStatus() == 201) {
-			System.out.println("Saved!");
+			Logger.debug("Saved!");
 			// TODO
 		} else {
-			System.out.println("Not Saved!");
+			Logger.debug("Not Saved!");
 			// TODO
 		}
 	}
 
 	public static Group getGroup(String id) throws ApplicationException {
-		String endpoint = Play.configuration
-				.getProperty("play.userservice.url");
-		WSRequest request = WS.url(endpoint + "groups/%s", id);
+		WSRequest request = WS.url(getEndpoint() + "groups/%s", id);
 
 		HttpResponse response = null;
 		try {
@@ -244,16 +236,15 @@ public class UserClient {
 			Gson gson = new Gson();
 			return gson.fromJson(json, Group.class);
 		} else {
+			Logger.debug("Status %s", response.getStatusText());
 			return null;
 		}
 	}
 
 	public static void createGroup(Group group) throws ApplicationException {
-		String endpoint = Play.configuration
-				.getProperty("play.userservice.url");
 
 		Gson gson = new Gson();
-		WSRequest request = WS.url(endpoint + "groups")
+		WSRequest request = WS.url(getEndpoint() + "groups")
 				.setHeader("ContentType", "application/json")
 				.mimeType("application/json").body(gson.toJson(group));
 
@@ -264,30 +255,116 @@ public class UserClient {
 			throw new ApplicationException("Can not connect to service");
 		}
 		if (response.getStatus() == 201) {
-			System.out.println("Saved!");
+			Logger.debug("Saved!");
 			// TODO
 		} else {
-			System.out.println("Not Saved!");
+			Logger.debug("Not Saved!");
 			// TODO
 		}
 	}
 
 	/**
+	 * TODO : Get the groups object for the user
 	 * 
 	 * @param user
 	 * @return
 	 */
 	public static List<Group> getGroups(User user) throws ApplicationException {
 		List<Group> result = new ArrayList<Group>();
-		if (user.groups != null && user.groups.size() > 0) {
-			// TODO
-		}
+		
+		WSRequest request = WS.url(getEndpoint() + "groups");
 
-		return result;
+		HttpResponse response = null;
+		try {
+			response = request.get();
+		} catch (RuntimeException e) {
+			throw new ApplicationException("Can not connect to service");
+		}
+		
+		if (response.getStatus() == 200) {
+			JsonElement json = response.getJson();
+			Gson gson = new Gson();
+			Groups groups = gson.fromJson(json, Groups.class);
+			return groups.groups;
+		} else {
+			Logger.debug("Status %s", response.getStatusText());
+			return result;
+		}
 	}
 
 	private static final String getEndpoint() {
 		return Play.configuration.getProperty("play.userservice.url");
+	}
+
+	/**
+	 * @param user
+	 * @param name
+	 * @return
+	 * @throws ApplicationException 
+	 */
+	public static User addGroup(User user, String group) throws ApplicationException {
+		
+		if (user.groups.contains(group)) {
+			throw new ApplicationException("You already belong to the group " + group);
+		}
+		
+		User result = null;
+		
+		Gson gson = new Gson();
+		user.groups.add(group);
+
+		String endpoint = getEndpoint() + "users";
+		WSRequest request = WS.url(endpoint)
+				.setHeader("ContentType", "application/json")
+				.mimeType("application/json").body(gson.toJson(user));
+		
+		HttpResponse response = null;
+		try {
+			response = request.put();
+		} catch (RuntimeException e) {
+			throw new ApplicationException("Can not connect to service");
+		}
+		
+		if (response.getStatus() == 200) {
+			// updated, got the user as response
+			result = gson.fromJson(response.getJson(), User.class);
+		} else {
+			Logger.debug("Status %s", response.getStatusText());
+		}
+
+		return result;
+	}
+	
+	public static User removeGroup(User user, String group) throws ApplicationException {
+		
+		if (!user.groups.contains(group)) {
+			throw new ApplicationException("You are not a member of the group " + group);
+		}
+		
+		User result = null;
+		
+		Gson gson = new Gson();
+		user.groups.remove(group);
+
+		String endpoint = getEndpoint() + "users";
+		WSRequest request = WS.url(endpoint)
+				.setHeader("ContentType", "application/json")
+				.mimeType("application/json").body(gson.toJson(user));
+		
+		HttpResponse response = null;
+		try {
+			response = request.put();
+		} catch (RuntimeException e) {
+			throw new ApplicationException("Can not connect to service");
+		}
+		
+		if (response.getStatus() == 200) {
+			result = gson.fromJson(response.getJson(), User.class);
+		} else {
+			Logger.debug("Status %s", response.getStatusText());
+		}
+
+		return result;
 	}
 
 }

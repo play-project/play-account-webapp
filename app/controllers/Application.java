@@ -19,9 +19,13 @@
  */
 package controllers;
 
+import java.util.List;
+
 import models.Account;
 import models.ApplicationException;
+import models.Group;
 import models.User;
+import play.Logger;
 import play.cache.Cache;
 import play.data.validation.Required;
 import play.mvc.Before;
@@ -163,13 +167,66 @@ public class Application extends Controller {
 	}
 	
 	/**
+	 * Get the current user groups
+	 * 
+	 * @param name
+	 */
+	public static void groups() {
+		try {
+			User user = getUser();
+			List<Group> groups = UserClient.getGroups(user);
+			
+			render(groups);
+		} catch (ApplicationException e) {
+			flash.error(e.getMessage());
+			index();
+		}
+	}
+	
+	public static void joinGroup(String name) {
+		User user = getUser();
+		if (user == null) {
+			flash.error("Can not retrieve user");
+			index();
+		}
+		try {
+			User result = UserClient.addGroup(user, name);
+			flash.success("You joined group %s", name);
+			reloadUser();
+
+		} catch (ApplicationException e) {
+			e.printStackTrace();
+			flash.error("Error while joining group : %s", e.getMessage());
+		}
+		groups();
+	}
+	
+	public static void leaveGroup(String name) {
+		User user = getUser();
+		if (user == null) {
+			flash.error("Can not retrieve user");
+			index();
+		}
+		try {
+			User result = UserClient.removeGroup(user, name);
+			flash.success("You left group %s", name);
+			reloadUser();
+
+		} catch (ApplicationException e) {
+			e.printStackTrace();
+			flash.error("Error while leaving group : %s", e.getMessage());
+		}
+		groups();
+	}
+	
+	/**
 	 * 
 	 * @return
 	 */
 	private static User getUser() {
 		String uid = session.get(PLAYUSER_ID);
 		if (uid == null) {
-			System.out.println("No play user found...");
+			Logger.debug("No play user found...");
 			signin(null);
 		}
 
@@ -179,11 +236,27 @@ public class Application extends Controller {
 				user = UserClient.getUserFromID(uid);
 				Cache.set(uid, user);
 			} catch (ApplicationException e) {
-				flash.error("Problem while getting user from store...");
+				e.printStackTrace();
+				flash.error("Something wrong occured");
 			}
 		} else {
 			user = (User) Cache.get(uid);
 		}
 		return user;
+	}
+	
+	private static void reloadUser() {
+		String uid = session.get(PLAYUSER_ID);
+		if (uid == null) {
+			signin(null);
+		}
+		
+		try {
+			User user = UserClient.getUserFromID(uid);
+			Cache.set(uid, user);
+		} catch (ApplicationException e) {
+			flash.error("Something wrong occured");
+			signin(null);
+		}
 	}
 }

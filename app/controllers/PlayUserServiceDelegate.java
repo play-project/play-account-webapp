@@ -25,6 +25,7 @@ import java.util.List;
 import models.Account;
 import models.ApplicationException;
 import models.User;
+import play.Logger;
 import play.cache.Cache;
 import play.mvc.Controller;
 import securesocial.provider.ProviderType;
@@ -47,7 +48,7 @@ public class PlayUserServiceDelegate extends Controller implements
 	public SocialUser find(final UserId user) {
 		// search in the user service if a user with login and provider is
 		// already registered
-		System.out.println("Looking at a user in the registry..." + user);
+		Logger.debug("Looking at a user in the registry..." + user);
 		User u = null;
 		try {
 			u = UserClient.getUserFromProvider(user.id,
@@ -119,7 +120,7 @@ public class PlayUserServiceDelegate extends Controller implements
 	}
 
 	public void save(final SocialUser user) {
-		System.out.println("Save social user : " + user);
+		Logger.debug("Save social user : " + user);
 		// called at each login. Do not save the user if it is already available
 		// in the store...
 
@@ -127,7 +128,7 @@ public class PlayUserServiceDelegate extends Controller implements
 		// if not logged in...
 
 		if (this.find(user.id) != null) {
-			System.out.println("Already available...");
+			Logger.debug("Already available...");
 			// FIXME : at least we can update the user information if needed...
 			return;
 		}
@@ -169,7 +170,6 @@ public class PlayUserServiceDelegate extends Controller implements
 
 										if (user.authMethod.toString()
 												.equalsIgnoreCase("oauth1")) {
-											System.out.println("OAuth1");
 											return account.secret != null
 													&& account.token != null
 													&& account.secret
@@ -179,18 +179,16 @@ public class PlayUserServiceDelegate extends Controller implements
 
 										} else if (user.authMethod.toString()
 												.equalsIgnoreCase("oauth2")) {
-											System.out.println("OAuth2");
 											return account.accessToken != null
 													&& account.accessToken
 															.equals(user.accessToken);
 										} else {
-											System.out.println("Unknow auth method..." + user.authMethod);
+											Logger.warn("Unknow auth method..." + user.authMethod);
 											return false;
 										}
 
 									} else {
-										System.out
-												.println("!provider : Account "
+										Logger.debug("!provider : Account "
 														+ account.provider
 														+ " : user "
 														+ user.id.provider);
@@ -201,11 +199,9 @@ public class PlayUserServiceDelegate extends Controller implements
 
 			if (filtered != null && filtered.size() == 1) {
 				// already have the account linked
-				System.out
-						.println("Social Account has been found in the current user");
+				Logger.debug("Social Account has been found in the current user");
 			} else {
-				System.out
-						.println("Social Account has NOT been found in the current user, let's add it");
+				Logger.debug("Social Account has NOT been found in the current user, let's add it");
 				Account account = new Account();
 				account.email = user.email;
 				account.accessToken = user.accessToken;
@@ -235,7 +231,7 @@ public class PlayUserServiceDelegate extends Controller implements
 
 		} else {
 			// not logged in, TODO...
-			System.out.println("Not logged in, do nothing...");
+			Logger.debug("Not logged in, do nothing...");
 			flash.error("Something bad occured...");
 		}
 	}
