@@ -125,7 +125,8 @@ public class Application extends Controller {
 		session.put(PLAYUSER_ID, user.id);
 		Cache.add(user.id, user);
 		
-		user();
+		flash.success("Successfully connected");
+		index();
 	}
 	
 	/**

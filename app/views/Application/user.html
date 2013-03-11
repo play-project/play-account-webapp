@@ -1,6 +1,9 @@
 #{extends 'main.html' /} #{set title:'Home' /}
 
-<h3>My account</h3>
+<ul class="breadcrumb">
+  <li><a href="@{Application.index()}">Home</a> <span class="divider">/</span></li>
+  <li class="active">Account</li>
+</ul>
 
 <div class="media">
   <a class="pull-left" href="#">
