@@ -19,6 +19,7 @@
  */
 package controllers;
 
+import models.ApplicationException;
 import models.User;
 import client.UserClient;
 import play.data.validation.Required;
@@ -59,10 +60,15 @@ public class Registration extends Controller {
 			register(fullName, username, email, password);
 		}
 
-		if (UserClient.exists(username)) {
-			flash.error(
-					"'%s' is already registered in the platform, please choose another one...",
-					username);
+		try {
+			if (UserClient.exists(username)) {
+				flash.error(
+						"'%s' is already registered in the platform, please choose another one...",
+						username);
+				register(fullName, username, email, password);
+			}
+		} catch (ApplicationException e) {
+			flash.error(e.getMessage());
 			register(fullName, username, email, password);
 		}
 
@@ -72,16 +78,22 @@ public class Registration extends Controller {
 		user.fullName = fullName;
 		user.login = username;
 		user.password = password;
-		if (UserClient.save(user)) {
-			// saved, let's push user into the session...
-			flash.success("You are now registered as '%s',  please login", username);
-			Application.signin(username);
+		try {
+			if (UserClient.save(user)) {
+				// saved, let's push user into the session...
+				flash.success("You are now registered as '%s',  please login", username);
+				Application.signin(username);
 
-		} else {
-			// ...
-			flash.error("Problem while registering your account, Play has been notified...");
+			} else {
+				// ...
+				flash.error("Problem while registering your account, Play has been notified...");
+				Application.index();
+			}
+		} catch (ApplicationException e) {
+			flash.error(e.getMessage());
 			Application.index();
 		}
+		
 		Application.index();
 	}
 

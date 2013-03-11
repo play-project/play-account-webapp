@@ -20,6 +20,7 @@
 package controllers;
 
 import models.Account;
+import models.ApplicationException;
 import models.User;
 import play.cache.Cache;
 import play.data.validation.Required;
@@ -53,21 +54,25 @@ public class Application extends Controller {
 		// get ID from secure social plugin
 		String uid = session.get(PLAYUSER_ID);
 		if (uid == null) {
-			System.out.println("No play user found...");
 			signin(null);
 		}
 
 		// get the user from the store. TODO Can also get it from the cache...
 		User user = null;
 		if (Cache.get(uid) == null) {
-			user = UserClient.getUserFromID(uid);
-			Cache.set(uid, user);
+			try {
+				user = UserClient.getUserFromID(uid);
+				Cache.set(uid, user);
+			} catch (ApplicationException e) {
+				e.printStackTrace();
+				flash.error("Problem while getting user from store...");
+			}
 		} else {
 			user = (User) Cache.get(uid);
 		}
 		
 		if (user == null) {
-			System.out.println("Problem while getting user from store...");
+			flash.error("Problem while getting user from store...");
 			Authentifier.logout();
 		}
 		
@@ -100,7 +105,13 @@ public class Application extends Controller {
 			signin(username);
 		}
 		
-		User user = UserClient.userpass(username, password);
+		User user = null;
+		try {
+			user = UserClient.userpass(username, password);
+		} catch (ApplicationException e) {
+			flash.error("Internal error : " + e.getMessage());
+			signin(username);
+		}
 		if (user == null) {
 			flash.error("Bad username/password");
 			signin(username);
@@ -162,11 +173,14 @@ public class Application extends Controller {
 			signin(null);
 		}
 
-		// get the user from the store. TODO Can also get it from the cache...
 		User user = null;
 		if (Cache.get(uid) == null) {
-			user = UserClient.getUserFromID(uid);
-			Cache.set(uid, user);
+			try {
+				user = UserClient.getUserFromID(uid);
+				Cache.set(uid, user);
+			} catch (ApplicationException e) {
+				flash.error("Problem while getting user from store...");
+			}
 		} else {
 			user = (User) Cache.get(uid);
 		}

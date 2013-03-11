@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.Account;
+import models.ApplicationException;
 import models.User;
 import play.cache.Cache;
 import play.mvc.Controller;
@@ -47,8 +48,16 @@ public class PlayUserServiceDelegate extends Controller implements
 		// search in the user service if a user with login and provider is
 		// already registered
 		System.out.println("Looking at a user in the registry..." + user);
-		User u = UserClient.getUserFromProvider(user.id,
-				user.provider.toString());
+		User u = null;
+		try {
+			u = UserClient.getUserFromProvider(user.id,
+					user.provider.toString());
+		} catch (ApplicationException e) {
+			flash.error("Internal error : %s", e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		
 		if (u != null) {
 			List<Account> filtered = new ArrayList<Account>(
 					Collections2.filter(u.accounts, new Predicate<Account>() {
@@ -135,9 +144,16 @@ public class PlayUserServiceDelegate extends Controller implements
 						.get(Application.PLAYUSER_ID));
 			} else {
 				// get the user from the store
-				playuser = UserClient.getUserFromID(session
-						.get(Application.PLAYUSER_ID));
-				Cache.set(session.get(Application.PLAYUSER_ID), playuser);
+				try {
+					playuser = UserClient.getUserFromID(session
+							.get(Application.PLAYUSER_ID));
+					Cache.set(session.get(Application.PLAYUSER_ID), playuser);
+
+				} catch (ApplicationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return;
+				}
 			}
 
 			// check if the social account is already registered in the playuser
@@ -199,18 +215,28 @@ public class PlayUserServiceDelegate extends Controller implements
 				account.provider = user.id.provider.toString().toLowerCase();
 				account.secret = user.secret;
 				account.token = user.token;
-				User result = UserClient.addAccount(playuser, account);
+				try {
+					User result = UserClient.addAccount(playuser, account);
+				} catch (ApplicationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				// fech user from the store...
-				playuser = UserClient.getUserFromID(session
-						.get(Application.PLAYUSER_ID));
-				Cache.set(session.get(Application.PLAYUSER_ID), playuser);
-
+				try {
+					playuser = UserClient.getUserFromID(session
+							.get(Application.PLAYUSER_ID));
+					Cache.set(session.get(Application.PLAYUSER_ID), playuser);
+				} catch (ApplicationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 		} else {
 			// not logged in, TODO...
 			System.out.println("Not logged in, do nothing...");
+			flash.error("Something bad occured...");
 		}
 	}
 }
