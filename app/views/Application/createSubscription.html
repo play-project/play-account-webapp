@@ -1,0 +1,26 @@
+#{extends 'main.html' /} #{set title:'New Subscription' /}
+
+<ul class="breadcrumb">
+  <li><a href="@{Application.index()}">Home</a> <span class="divider">/</span></li>
+  <li><a href="@{Application.subscriptions()}">Subscriptions</a> <span class="divider">/</span></li>
+  <li class="active">New</li>
+</ul>
+
+<div class="row">
+	<div class="span2">&nbsp;</div>
+	<div class="span8 well">
+	  	<legend>Create a new Subscription</legend>
+	    <form accept-charset="UTF-8" action="@{Application.doCreateSubscription()}" method="post">
+	        <label>Resource ID</label>
+	        <input class="span8" name="resource" placeholder="Resource ID" type="text" value="${params?.resource}${flash?.resource}"/> 
+	        <label>Susbcriber URL</label>
+	        <input class="span8" name="subscriber" placeholder="Subscriber URL" value="${params?.subscriber}${flash?.subscriber}" type="text"> 
+	        <div class="row">
+	        	<div class="span8">
+	        		<button class="btn btn-success" type="submit">Create</button>&nbsp;<a href="@{Application.subscriptions()}" class="btn btn-warning" type="submit">Cancel</a>
+	    		</div>
+	    	</div>
+	    </form>
+	</div>
+	<div class="span2">&nbsp;</div>
+</div>

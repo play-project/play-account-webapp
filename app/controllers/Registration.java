@@ -20,8 +20,8 @@
 package controllers;
 
 import models.ApplicationException;
-import models.User;
-import client.UserClient;
+import client.user.v1.User;
+import client.user.v1.UserClient;
 import play.data.validation.Required;
 import play.mvc.Controller;
 

@@ -22,9 +22,7 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.Account;
 import models.ApplicationException;
-import models.User;
 import play.Logger;
 import play.cache.Cache;
 import play.mvc.Controller;
@@ -32,7 +30,9 @@ import securesocial.provider.ProviderType;
 import securesocial.provider.SocialUser;
 import securesocial.provider.UserId;
 import securesocial.provider.UserServiceDelegate;
-import client.UserClient;
+import client.user.v1.Account;
+import client.user.v1.User;
+import client.user.v1.UserClient;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;

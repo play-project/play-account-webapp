@@ -1,7 +1,7 @@
 /**
  * 
  */
-package models;
+package client.user.v1;
 
 import java.io.Serializable;
 

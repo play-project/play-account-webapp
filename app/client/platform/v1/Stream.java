@@ -17,19 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA 
  *
  */
-package models;
+package client.platform.v1;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
 /**
- * Used to translate JSON API response.
- * 
  * @author chamerling
  *
  */
-public class Groups {
+public class Stream implements Serializable {
 	
-	public List<Group> groups = new ArrayList<Group>();
+	public String id;
+	
+	public String resource_url;
 
 }

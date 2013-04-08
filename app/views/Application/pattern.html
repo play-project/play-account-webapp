@@ -1,0 +1,16 @@
+#{extends 'main.html' /} #{set title:'Pattern Details' /}
+
+<ul class="breadcrumb">
+  <li><a href="@{Application.index()}">Home</a> <span class="divider">/</span></li>
+  <li><a href="@{Application.patterns()}">Patterns</a> <span class="divider">/</span></li>
+  <li class="active">${pattern.pattern_id}</li>
+</ul>
+
+<div class="well">
+	<a href="#" class="btn">XXX</a>
+</div>
+
+<code>
+	${pattern.data}
+</code>
+

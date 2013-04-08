@@ -1,0 +1,43 @@
+#{extends 'main.html' /} #{set title:'Streams' /}
+
+<ul class="breadcrumb">
+  <li><a href="@{Application.index()}">Home</a> <span class="divider">/</span></li>
+  <li class="active">Streams</li>
+</ul>
+
+#{if streams}
+	<div class="alert alert-info">
+  		<button type="button" class="close" data-dismiss="alert">&times;</button>
+  		<h4>Info!</h4>
+  		You have access to ${streams.size()} stream${streams.pluralize('', 's')}
+	</div>
+	
+	<table class="table table-striped">
+        <thead>
+          <tr>
+          	<th>#</th>
+            <th>ID</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        %{int i = 0}%
+        #{list streams, as : 'stream'}
+          <tr>
+          <td align="left">${i++}</td>
+            <td><a href="${stream.id}" target="_blank">${stream.id}<i class="icon-share-alt"></i></a></td>
+            <td>
+            	<a href="@{Application.createSubscription}?resource=${stream.id}" class="btn">Subscribe</a>&nbsp;
+            </td>
+          </tr>
+        #{/list}
+        </tbody>
+      </table>
+#{/if}
+#{else}
+	<div class="alert alert-error">
+  		<button type="button" class="close" data-dismiss="alert">&times;</button>
+  		<h4>Info!</h4>
+  		You do not have access to any stream, check your groups<a href="@{Application.groups}"><i class="icon-share-alt"></i></a>
+	</div>
+#{/else}

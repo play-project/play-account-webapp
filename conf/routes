@@ -25,6 +25,21 @@ GET     /groups/{name}							Application.group
 GET     /groups/{name}/join                     Application.joinGroup
 GET     /groups/{name}/leave                    Application.leaveGroup
 
+# API calls
+GET     /me/streams                             Application.streams
+
+GET     /me/subscriptions                       Application.subscriptions
+GET     /me/subscriptions/create                Application.createSubscription
+GET     /me/subscriptions/delete/{id}           Application.doDeleteSubscription
+POST    /me/subscriptions/create                Application.doCreateSubcription
+
+GET     /me/publish                             Application.publish
+POST    /me/publish                             Application.createPublish
+
+GET     /me/patterns                            Application.patterns
+GET     /me/patterns/deploy                     Application.deployPattern
+POST    /me/patterns/deploy                     Application.doDeployPattern
+GET     /me/patterns/{id}                       Application.pattern
 
 # Websocket
 WS      /websocket/backgroundMessage            BackgroundTaskWebSocket.pushNewMessage

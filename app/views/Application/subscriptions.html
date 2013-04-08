@@ -1,0 +1,48 @@
+#{extends 'main.html' /} #{set title:'Subscriptions' /}
+
+<ul class="breadcrumb">
+  <li><a href="@{Application.index()}">Home</a> <span class="divider">/</span></li>
+  <li class="active">Subscriptions</li>
+</ul>
+
+<div class="well">
+	<a class="btn" href="@{Application.createSubscription}">Create</a>
+</div>
+
+#{if subscriptions}
+	<div class="alert alert-info">
+  		<button type="button" class="close" data-dismiss="alert">&times;</button>
+  		<h4>Info!</h4>
+  		You have ${subscriptions.size()} subscription${subscriptions.pluralize('', 's')}
+	</div>
+	
+	<table class="table table-striped">
+        <thead>
+          <tr>
+          	<th>Subscription ID</th>
+            <th>Subscribed To</th>
+            <th>Subscriber</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        #{list subscriptions, as : 's'}
+          <tr>
+          <td align="left"><a id="${s.subscription_id}">${s.subscription_id}</a></td>
+            <td><a href="${s.resource}" target="_blank">${s.resource}</a></td>
+            <td><a href="${s.subscriber}" target="_blank">${s.subscriber}</a></td>
+            <td>
+            	<a href="@{Application.doDeleteSubscription(s.subscription_id)}" class="btn btn-danger">Unsubscribe</a>&nbsp;
+            </td>
+          </tr>
+        #{/list}
+        </tbody>
+      </table>
+#{/if}
+#{else}
+	<div class="alert alert-error">
+  		<button type="button" class="close" data-dismiss="alert">&times;</button>
+  		<h4>Info!</h4>
+  		You do not have any subscription in the platform.
+	</div>
+#{/else}

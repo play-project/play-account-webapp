@@ -1,25 +1,20 @@
 /**
  * 
  */
-package client;
+package client.user.v1;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.Account;
 import models.ApplicationException;
-import models.Group;
-import models.Groups;
-import models.User;
 import play.Logger;
 import play.Play;
 import play.libs.WS;
 import play.libs.WS.HttpResponse;
 import play.libs.WS.WSRequest;
 import securesocial.provider.SocialUser;
+import client.platform.v1.Resource;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
@@ -66,6 +61,8 @@ public class UserClient {
 		
 		if (response.getStatus() == 200) {
 			JsonElement json = response.getJson();
+			System.out.println(json.toString());
+
 			Gson gson = new Gson();
 			return gson.fromJson(json, User.class);
 		} else {
@@ -124,7 +121,6 @@ public class UserClient {
 	}
 
 	/**
-	 * TODO
 	 * 
 	 * @param userId
 	 * @param account
@@ -304,23 +300,20 @@ public class UserClient {
 	 */
 	public static User addGroup(User user, String group) throws ApplicationException {
 		
-		if (user.groups.contains(group)) {
-			throw new ApplicationException("You already belong to the group " + group);
-		}
-		
 		User result = null;
 		
 		Gson gson = new Gson();
-		user.groups.add(group);
+		Resource resource = new Resource();
+		resource.uri = group;
 
-		String endpoint = getEndpoint() + "users";
-		WSRequest request = WS.url(endpoint)
+		String endpoint = getEndpoint() + "users/%s/groups";
+		WSRequest request = WS.url(endpoint, user.id)
 				.setHeader("ContentType", "application/json")
-				.mimeType("application/json").body(gson.toJson(user));
+				.mimeType("application/json").body(gson.toJson(resource));
 		
 		HttpResponse response = null;
 		try {
-			response = request.put();
+			response = request.post();
 		} catch (RuntimeException e) {
 			throw new ApplicationException("Can not connect to service");
 		}
@@ -335,36 +328,27 @@ public class UserClient {
 		return result;
 	}
 	
-	public static User removeGroup(User user, String group) throws ApplicationException {
+	/**
+	 * Remove group from the user
+	 * 
+	 * @param user
+	 * @param group
+	 * @return
+	 * @throws ApplicationException
+	 */
+	public static void removeGroup(User user, String group)
+			throws ApplicationException {
 		
-		if (!user.groups.contains(group)) {
-			throw new ApplicationException("You are not a member of the group " + group);
-		}
-		
-		User result = null;
-		
-		Gson gson = new Gson();
-		user.groups.remove(group);
-
-		String endpoint = getEndpoint() + "users";
-		WSRequest request = WS.url(endpoint)
+		String endpoint = getEndpoint() + "users/%s/groups";
+		WSRequest request = WS.url(endpoint, user.id)
 				.setHeader("ContentType", "application/json")
-				.mimeType("application/json").body(gson.toJson(user));
+				.mimeType("application/json").setParameter("uri", group);
 		
-		HttpResponse response = null;
 		try {
-			response = request.put();
+			request.delete();
 		} catch (RuntimeException e) {
 			throw new ApplicationException("Can not connect to service");
 		}
-		
-		if (response.getStatus() == 200) {
-			result = gson.fromJson(response.getJson(), User.class);
-		} else {
-			Logger.debug("Status %s", response.getStatusText());
-		}
-
-		return result;
 	}
 
 }

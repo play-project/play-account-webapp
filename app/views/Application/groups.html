@@ -16,11 +16,12 @@
     <blockquote>
    	 	<p>${group.description}</p>
     </blockquote>
-    #{if (playuser.groups.contains(group.resourceURI))}
-    <a href="@{Application.leaveGroup(group.resourceURI)}" class="btn btn-danger">Leave</a>
+    
+    #{if (client.user.v1.ResourceHelper.in(group.getGroupURI(), playuser.groups))}
+    <a href="@{Application.leaveGroup(group.getGroupURI())}" class="btn btn-danger">Leave</a>
     #{/if}
     #{else} 
-    <a href="@{Application.joinGroup(group.resourceURI)}" class="btn btn-info">&nbsp;Join&nbsp;</a>
+    <a href="@{Application.joinGroup(group.getGroupURI())}" class="btn btn-info">&nbsp;Join&nbsp;</a>
   	#{/else}
   </div>
 </div>

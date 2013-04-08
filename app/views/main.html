@@ -40,7 +40,26 @@
 					#{if playuser}
 					<ul class="nav" id="main-menu-left">
 						<li><a href="@{Application.groups()}">Groups</a></li>
+						
+						<li class="dropdown" id="preview-menu">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Resources <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="@{Application.streams}">Streams</a></li>
+								<li><a href="@{Application.subscriptions}">Subscriptions</a></li>
+								<li><a href="@{Application.patterns}">Patterns</a></li>
+							</ul>
+						</li>
+						
+						<li class="dropdown" id="preview-menu">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Actions <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="@{Application.createSubscription}">Subscribe</a></li>
+								<li><a href="@{Application.index}">Publish Message</a></li>
+								<li><a href="@{Application.index}">Deploy Pattern</a></li>
+							</ul>
+						</li>							
 					</ul>
+
 					#{/if}
 					<ul class="nav pull-right" id="main-menu-right">
 						<li class="dropdown" id="preview-menu">
@@ -78,6 +97,18 @@
 			<strong>${flash.error}</strong>
 		</div>
 		#{/if}
+		
+		#{ifErrors}
+	    <div class="alert alert-error">
+			<button type="button" class="close" data-dismiss="alert">×</button>
+        	<p><strong>Some values are invalid, please fix them...</strong></p>
+        	<ul>
+         		#{errors}
+       			<li>${error}</li>
+   				#{/errors}
+   			</ul>
+      	</div>
+		#{/ifErrors}
 
      	#{doLayout /}
   </div>

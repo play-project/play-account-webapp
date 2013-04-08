@@ -1,0 +1,48 @@
+#{extends 'main.html' /} #{set title:'Patterns' /}
+
+<ul class="breadcrumb">
+  <li><a href="@{Application.index()}">Home</a> <span class="divider">/</span></li>
+  <li class="active">Patterns</li>
+</ul>
+
+<div class="well">
+	<a class="btn" href="@{Application.deployPattern}">Deploy</a>
+</div>
+
+#{if patterns}
+	<div class="alert alert-info">
+  		<button type="button" class="close" data-dismiss="alert">&times;</button>
+  		<h4>Info!</h4>
+  		You have ${patterns.size()} deployed pattern${patterns.pluralize('', 's')}
+	</div>
+	
+	<table class="table table-striped">
+        <thead>
+          <tr>
+          	<th>#</th>
+            <th>ID</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        %{int i = 0}%
+        #{list patterns, as : 'pattern'}
+          <tr>
+          <td align="left">${i++}</td>
+            <td><a href="@{Application.pattern(pattern.pattern_id)}">${pattern.pattern_id}</a></td>
+            <td>
+            	<a href="@{Application.pattern(pattern.pattern_id)}" class="btn" target="_blank">Details</a>&nbsp;
+            	<a href="#" class="btn btn-danger" target="_blank">Undeploy</a>&nbsp;
+            </td>
+          </tr>
+        #{/list}
+        </tbody>
+      </table>
+#{/if}
+#{else}
+	<div class="alert alert-error">
+  		<button type="button" class="close" data-dismiss="alert">&times;</button>
+  		<h4>Info!</h4>
+  		You do not have deployed any pattern in the system.
+	</div>
+#{/else}

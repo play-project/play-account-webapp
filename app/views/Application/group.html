@@ -1,0 +1,29 @@
+#{extends 'main.html' /} #{set title:'Group details' /}
+
+<ul class="breadcrumb">
+  <li><a href="@{Application.index()}">Home</a> <span class="divider">/</span></li>
+  <li><a href="@{Application.groups()}">Groups</a> <span class="divider">/</span></li>
+  <li class="active">${group.name}</li>
+</ul>
+
+<h3>${group.name}&nbsp;<small>${group.resourceURI}</small></h3>
+<blockquote>
+ 	<p>${group.description}</p>
+</blockquote>
+
+<div class="well">
+    #{if (client.user.v1.ResourceHelper.in(group.getGroupURI(), playuser.groups))}
+    <a href="@{Application.leaveGroup(group.getGroupURI())}" class="btn btn-danger">Leave</a>
+    #{/if}
+    #{else} 
+    <a href="@{Application.joinGroup(group.getGroupURI())}" class="btn btn-info">&nbsp;Join&nbsp;</a>
+  	#{/else}
+</div>
+
+<h4>Details</h4>
+
+<ul>
+#{list group.metadata, as : 'meta'}
+<li>${meta.name} - ${meta.type} - ${meta.value}</li>
+#{/list}
+</ul>

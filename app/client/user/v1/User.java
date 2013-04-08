@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA 
  *
  */
-package models;
+package client.user.v1;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class User implements Serializable {
 	 */
 	public List<Account> accounts = new ArrayList<Account>();
 
-	public List<String> groups = new ArrayList<String>();
+	public List<Resource> groups = new ArrayList<Resource>();
 
 	/*
 	 * (non-Javadoc)
