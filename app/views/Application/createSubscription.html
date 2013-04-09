@@ -12,7 +12,17 @@
 	  	<legend>Create a new Subscription</legend>
 	    <form accept-charset="UTF-8" action="@{Application.doCreateSubscription()}" method="post">
 	        <label>Resource ID</label>
-	        <input class="span8" name="resource" placeholder="Resource ID" type="text" value="${params?.resource}${flash?.resource}"/> 
+	      	<select name="resource" class="span8">
+			#{list streams, as : 'stream'}
+			#{if ((params.resource != null) && params.resource.equals(stream.id)) ||  ((flash.resource != null) && (flash.resource.equals(stream.id)))}
+				<option selected="selected">${stream.id}</option>
+			#{/if}
+			#{else}
+				<option>${stream.id}</option>
+			#{/else}
+        	#{/list}
+			</select>
+	        *{<input class="span8" name="resource" placeholder="Resource ID" type="text" value="${params?.resource}${flash?.resource}"/>}*
 	        <label>Susbcriber URL</label>
 	        <input class="span8" name="subscriber" placeholder="Subscriber URL" value="${params?.subscriber}${flash?.subscriber}" type="text"> 
 	        <div class="row">

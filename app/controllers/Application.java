@@ -320,18 +320,32 @@ public class Application extends Controller {
 	}
 
 	public static void createSubscription() {
-		render();
+		List<Stream> streams = null;
+		try {
+			streams = PlatformClient.streams(getUser());
+		} catch (ApplicationException e) {
+			e.printStackTrace();
+			flash.error("Error while getting available streams %s",
+					e.getMessage());
+			index();
+		}
+		render(streams);
 	}
 
 	public static void doCreateSubscription(
 			@Required(message = "Resource URL is required") @URL(message = "Valid resource URL is required") String resource,
-			@Required(message = "Subscriber URL is required") @URL(message = "Valid subscriber URL is required") String subscriber) {
+			@Required(message = "Subscriber URL is required") String subscriber) {
 
 		// resource and subscription must be non null and URLs
 		validation.required(resource);
 		validation.required(subscriber);
 		validation.url(resource);
-		validation.url(subscriber);
+
+		// play validation does not like localhost...
+		validation.isTrue(subscriber != null
+				&& (subscriber.startsWith("http://") || subscriber
+						.startsWith("https://")));
+		// validation.url(subscriber);
 
 		if (validation.hasErrors()) {
 			params.flash();
