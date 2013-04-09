@@ -59,6 +59,8 @@ public class User implements Serializable {
 
 	public List<Resource> groups = new ArrayList<Resource>();
 
+	public List<Resource> resources = new ArrayList<Resource>();
+
 	/*
 	 * (non-Javadoc)
 	 * 

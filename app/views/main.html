@@ -15,14 +15,15 @@
 			padding: 9px 0;
 		}
 		</style>
-		<link href="@{'/public/assets/css/bootstrap-responsive.css'}"
-			rel="stylesheet">
+		<link href="@{'/public/assets/css/bootstrap-responsive.css'}" rel="stylesheet">
 		
         #{get 'moreStyles' /}
+        
         <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
         <script src="@{'/public/javascripts/jquery-1.5.2.min.js'}" type="text/javascript" charset="utf-8"></script>
         <script src="@{'/public/javascripts/application.js'}" type="text/javascript" charset="utf-8"></script>
         #{get 'moreScripts' /}
+        
     </head>
     <body>
 
@@ -84,7 +85,25 @@
 	</div>
 
 	<div class="container">
-  
+	
+	<div class="row">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">User Resources</li>
+              <li><a href="#"><i class="icon-envelope"></i> Subscriptions <span class="badge badge-important">${client.user.v1.ResourceHelper.subscriptions(playuser)}</span></a></li>
+              <li><a href="#"><i class="icon-file"></i> Patterns <span class="badge badge-important">${client.user.v1.ResourceHelper.patterns(playuser)}</span></a></li>
+              <li class="nav-header">Platform Resources</li>
+              <li><a href="#"><i class="icon-tasks"></i> Streams</a></li>
+              <li><a href="#"><i class="icon-globe"></i> Groups</a></li>
+			  <li class="divider"></li>
+			  <li><a href="#"><i class="icon-user"></i> Profile</a></li>
+              <li><a href="#"><i class="icon-share"></i> Logout</a></li>
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        <div class="span9">
+	
 		#{if flash.success}
 		<div class="alert alert-success">
 			<button type="button" class="close" data-dismiss="alert">×</button>
@@ -101,18 +120,21 @@
 		#{ifErrors}
 	    <div class="alert alert-error">
 			<button type="button" class="close" data-dismiss="alert">×</button>
-        	<p><strong>Some values are invalid, please fix them...</strong></p>
-        	<ul>
-         		#{errors}
-       			<li>${error}</li>
-   				#{/errors}
-   			</ul>
-      	</div>
+	       	<p><strong>Some values are invalid, please fix them...</strong></p>
+	       	<ul>
+	        		#{errors}
+	      			<li>${error}</li>
+	  				#{/errors}
+	  			</ul>
+	     	</div>
 		#{/ifErrors}
-
-     	#{doLayout /}
-  </div>
-  
+	
+		#{doLayout /}
+      
+  	</div>
+  	</div>
+  	</div>
+  	
   	<script src="@{'/public/assets/js/jquery.js'}"></script>
 	<script src="@{'/public/assets/js/bootstrap-transition.js'}"></script>
 	<script src="@{'/public/assets/js/bootstrap-alert.js'}"></script>

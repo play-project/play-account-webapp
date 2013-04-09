@@ -22,6 +22,7 @@ package client.user.v1;
 import java.util.List;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 
 /**
@@ -37,6 +38,37 @@ public class ResourceHelper {
 				return r.uri.equals(resource);
 			};
 		}).isPresent();
+	}
+
+	public static long groups(User user) {
+		if (user == null || user.groups == null) {
+			return 0;
+		}
+		return user.groups.size();
+	}
+
+	public static long subscriptions(User user) {
+		if (user == null || user.resources == null) {
+			return 0;
+		}
+		return Collections2.filter(user.resources, new Predicate<Resource>() {
+			public boolean apply(Resource resource) {
+				return resource != null && resource.name != null
+						&& resource.name.equals("subscription");
+			}
+		}).size();
+	}
+
+	public static long patterns(User user) {
+		if (user == null || user.resources == null) {
+			return 0;
+		}
+		return Collections2.filter(user.resources, new Predicate<Resource>() {
+			public boolean apply(Resource resource) {
+				return resource != null && resource.name != null
+						&& resource.name.equals("pattern");
+			}
+		}).size();
 	}
 
 }
