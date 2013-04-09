@@ -155,6 +155,37 @@ public class UserClient {
 	}
 
 	/**
+	 * Delete an account from the user.
+	 * 
+	 * @param user
+	 *            the user to remove account from
+	 * @param provider
+	 *            the account provider
+	 * @param username
+	 *            the account username
+	 * @throws ApplicationException
+	 */
+	public static void removeAccount(User user, String provider)
+			throws ApplicationException {
+		String endpoint = getEndpoint() + "users/%s/accounts";
+		WSRequest request = WS.url(endpoint, user.id).setParameter("provider",
+				provider);
+
+		HttpResponse response = null;
+
+		try {
+			response = request.delete();
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw new ApplicationException("Can not connect to service");
+		}
+
+		if (response.getStatus() != 204) {
+			throw new ApplicationException("Can not remove account");
+		}
+	}
+
+	/**
 	 * Check if the user already exists
 	 * 
 	 * @param user

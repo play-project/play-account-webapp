@@ -162,7 +162,24 @@ public class Application extends Controller {
 	 * @param provider
 	 */
 	public static final void unlinkAccount(String provider) {
-		// TODO
+		if (provider == null || provider.trim().length() == 0) {
+			flash.error("Wrong account provider");
+			user();
+		}
+
+		User user = getUser();
+		if (user == null) {
+			flash.error("Can not retrieve user");
+			index();
+		}
+		try {
+			UserClient.removeAccount(getUser(), provider);
+			flash.success("%s account unlinked", provider);
+			reloadUser();
+		} catch (ApplicationException e) {
+			e.printStackTrace();
+			flash.error("Error while removing account : %s", e.getMessage());
+		}
 		user();
 	}
 
