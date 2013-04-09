@@ -36,6 +36,7 @@ import client.platform.v1.Stream;
 import client.platform.v1.Subscription;
 import client.user.v1.Account;
 import client.user.v1.Group;
+import client.user.v1.ResourceHelper;
 import client.user.v1.User;
 import client.user.v1.UserClient;
 
@@ -94,7 +95,9 @@ public class Application extends Controller {
 	}
 
 	public static void index() {
-		render();
+		List<client.user.v1.Resource> resources = ResourceHelper
+				.getOrderedResources(getUser());
+		render(resources);
 	}
 
 	public static void signin(String username) {
@@ -313,6 +316,7 @@ public class Application extends Controller {
 			Pattern p = PlatformClient.deploy(getUser(), pattern);
 			flash.success("Pattern deployed into the platform with id %s",
 					p.pattern_id);
+			reloadUser();
 		} catch (ApplicationException e) {
 			e.printStackTrace();
 			flash.success("Error while deploying pattern to the platform");
@@ -395,6 +399,7 @@ public class Application extends Controller {
 
 			flash.success("Subscription created %s",
 					subscription.subscription_id);
+			reloadUser();
 		} catch (ApplicationException e) {
 			e.printStackTrace();
 			flash.error("Error while creating subscription %s", e.getMessage());
@@ -420,6 +425,7 @@ public class Application extends Controller {
 			} else {
 				flash.error("Problem while removing subscription");
 			}
+			reloadUser();
 		} catch (ApplicationException e) {
 			e.printStackTrace();
 			flash.error("Error while removing subscription %s", e.getMessage());

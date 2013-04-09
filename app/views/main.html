@@ -91,14 +91,15 @@
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
               <li class="nav-header">User Resources</li>
-              <li><a href="#"><i class="icon-envelope"></i> Subscriptions <span class="badge badge-important">${client.user.v1.ResourceHelper.subscriptions(playuser)}</span></a></li>
-              <li><a href="#"><i class="icon-file"></i> Patterns <span class="badge badge-important">${client.user.v1.ResourceHelper.patterns(playuser)}</span></a></li>
+              <li><a href="@{Application.index()}"><i class="icon-fire"></i> Feed</a></li>
+              <li><a href="@{Application.subscriptions()}"><i class="icon-envelope"></i> Subscriptions <span class="badge badge-important">${client.user.v1.ResourceHelper.subscriptions(playuser)}</span></a></li>
+              <li><a href="@{Application.patterns()}"><i class="icon-file"></i> Patterns <span class="badge badge-important">${client.user.v1.ResourceHelper.patterns(playuser)}</span></a></li>
               <li class="nav-header">Platform Resources</li>
-              <li><a href="#"><i class="icon-tasks"></i> Streams</a></li>
-              <li><a href="#"><i class="icon-globe"></i> Groups</a></li>
+              <li><a href="@{Application.streams()}"><i class="icon-tasks"></i> Streams</a></li>
+              <li><a href="@{Application.groups()}"><i class="icon-globe"></i> Groups</a></li>
 			  <li class="divider"></li>
-			  <li><a href="#"><i class="icon-user"></i> Profile</a></li>
-              <li><a href="#"><i class="icon-share"></i> Logout</a></li>
+			  <li><a href="@{Application.user()}"><i class="icon-user"></i> Profile</a></li>
+              <li><a href="@{Authentifier.logout}"><i class="icon-share"></i> Logout</a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->

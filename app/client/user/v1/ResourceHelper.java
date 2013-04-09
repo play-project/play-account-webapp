@@ -19,11 +19,14 @@
  */
 package client.user.v1;
 
+import java.util.Comparator;
 import java.util.List;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 /**
  * @author chamerling
@@ -69,6 +72,26 @@ public class ResourceHelper {
 						&& resource.name.equals("pattern");
 			}
 		}).size();
+	}
+
+	public static List<Resource> getOrderedResources(User user) {
+		if (user == null) {
+			return Lists.newArrayList();
+		}
+
+		ImmutableSortedSet<Resource> r = ImmutableSortedSet
+				.orderedBy(new Comparator<Resource>() {
+					public int compare(Resource r1, Resource r2) {
+						if (Long.parseLong(r1.date) < Long.parseLong(r2.date)) {
+							return 1;
+						}
+						if (Long.parseLong(r1.date) == Long.parseLong(r2.date)) {
+							return 0;
+						}
+						return -1;
+					}
+				}).addAll(user.groups).addAll(user.resources).build();
+		return Lists.newArrayList(r);
 	}
 
 }
