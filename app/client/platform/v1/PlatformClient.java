@@ -234,8 +234,59 @@ public class PlatformClient {
 		}
 	}
 
+	/**
+	 * @param user
+	 * @param pattern
+	 * @throws ApplicationException
+	 */
+	public static Pattern deploy(User user, String pattern)
+			throws ApplicationException {
+		WSRequest request = WS.url(getEndpoint() + "patterns")
+				.setHeader("Authorization", "Bearer " + user.apiToken)
+				.setParameter("pattern", pattern)
+				.mimeType("application/x-www-form-urlencoded");
+
+		HttpResponse response = null;
+		try {
+			response = request.post();
+		} catch (RuntimeException e) {
+			throw new ApplicationException("Can not connect to service");
+		}
+
+		if (response.getStatus() == 201) {
+			JsonElement json = response.getJson();
+			Gson gson = new Gson();
+			return gson.fromJson(json, Pattern.class);
+		} else {
+			throw new ApplicationException("Pattern deployment failure");
+		}
+	}
+
+	/**
+	 * @param user
+	 * @param id
+	 * @throws ApplicationException
+	 */
+	public static void undeploy(User user, String id)
+			throws ApplicationException {
+		WSRequest request = WS.url(getEndpoint() + "patterns/%s", id)
+				.setHeader("Authorization", "Bearer " + user.apiToken);
+
+		HttpResponse response = null;
+		try {
+			response = request.delete();
+		} catch (RuntimeException e) {
+			throw new ApplicationException("Can not connect to service");
+		}
+
+		if (response.getStatus() != 204) {
+			throw new ApplicationException("Pattern undeployment failure");
+		}
+	}
+
 	public static String getEndpoint() {
 		return "http://localhost:8080/play/api/v1/platform/";
 	}
+
 
 }

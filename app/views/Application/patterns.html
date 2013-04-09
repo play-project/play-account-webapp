@@ -32,7 +32,7 @@
             <td><a href="@{Application.pattern(pattern.pattern_id)}">${pattern.pattern_id}</a></td>
             <td>
             	<a href="@{Application.pattern(pattern.pattern_id)}" class="btn" target="_blank">Details</a>&nbsp;
-            	<a href="#" class="btn btn-danger" target="_blank">Undeploy</a>&nbsp;
+				<a href="@{Application.doUndeployPattern(pattern.pattern_id)}" class="btn btn-danger">Undeploy</a>
             </td>
           </tr>
         #{/list}

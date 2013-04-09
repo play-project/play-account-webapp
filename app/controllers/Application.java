@@ -299,8 +299,44 @@ public class Application extends Controller {
 		render();
 	}
 
-	public static void doDeployPattern() {
-		flash.success("TODO : Pattern has been deployed");
+	public static void doDeployPattern(
+			@Required(message = "Pattern is required") String pattern) {
+		validation.required(pattern);
+
+		if (validation.hasErrors()) {
+			params.flash();
+			validation.keep();
+			deployPattern();
+		}
+
+		try {
+			Pattern p = PlatformClient.deploy(getUser(), pattern);
+			flash.success("Pattern deployed into the platform with id %s",
+					p.pattern_id);
+		} catch (ApplicationException e) {
+			e.printStackTrace();
+			flash.success("Error while deploying pattern to the platform");
+		}
+		patterns();
+	}
+
+	public static void doUndeployPattern(
+			@Required(message = "Pattern ID required") String id) {
+		validation.required(id);
+
+		if (validation.hasErrors()) {
+			params.flash();
+			validation.keep();
+			patterns();
+		}
+
+		try {
+			PlatformClient.undeploy(getUser(), id);
+			flash.success("Pattern %s undeployed from the platform", id);
+		} catch (ApplicationException e) {
+			e.printStackTrace();
+			flash.success("Error while deploying pattern to the platform");
+		}
 		patterns();
 	}
 

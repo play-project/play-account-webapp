@@ -11,10 +11,11 @@
 	<div class="span8 well">
 	  	<legend>Deploy a new Pattern</legend>
 	    <form accept-charset="UTF-8" action="@{Application.doDeployPattern()}" method="post">
-	        <input class="span8" name="password" placeholder="Password" type="password"> 
+	        <label>Pattern</label>
+	        <textarea name="pattern" class="span8" rows="10"></textarea>
 	        <div class="row">
 	        	<div class="span8">
-	        		<button class="btn btn-success" type="submit">Deploy</button>&nbsp;<a href="#" class="btn btn-warning" type="submit">Cancel</a>
+	        		<button class="btn btn-success" type="submit">Deploy</button>&nbsp;<a href="@{Application.index()}" class="btn btn-warning" type="submit">Cancel</a>
 	    		</div>
 	    	</div>
 	    </form>

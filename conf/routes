@@ -39,6 +39,7 @@ POST    /me/publish                             Application.createPublish
 GET     /me/patterns                            Application.patterns
 GET     /me/patterns/deploy                     Application.deployPattern
 POST    /me/patterns/deploy                     Application.doDeployPattern
+GET     /me/patterns/undeploy/{id}              Application.doUndeployPattern
 GET     /me/patterns/{id}                       Application.pattern
 
 # Websocket
