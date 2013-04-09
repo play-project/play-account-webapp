@@ -21,9 +21,9 @@ GET		/logmein								Authentifier.login
 
 # Groups
 GET     /groups									Application.groups
+GET     /groups/join		                    Application.joinGroup
+GET     /groups/leave                    Application.leaveGroup
 GET     /groups/{name}							Application.group
-GET     /groups/{name}/join                     Application.joinGroup
-GET     /groups/{name}/leave                    Application.leaveGroup
 
 # API calls
 GET     /me/streams                             Application.streams
