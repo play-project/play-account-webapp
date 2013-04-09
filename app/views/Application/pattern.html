@@ -10,7 +10,9 @@
 	<a href="@{Application.doUndeployPattern(pattern.pattern_id)}" class="btn btn-danger">Undeploy</a>
 </div>
 
-<code>
+<blockquote>Published on ${Long.parseLong(pattern.date).asdate('dd MMMM yyyy hh:mm:ss')}</blockquote>
+
+<pre class="pre-scrollable">
 	${pattern.data}
-</code>
+</pre>
 

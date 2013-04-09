@@ -34,4 +34,6 @@ public class Subscription implements Serializable {
 	public String subscription_id;
 	
 	public String resource_url;
+
+	public String date;
 }

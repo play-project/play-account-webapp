@@ -21,6 +21,7 @@
           <tr>
           	<th>#</th>
             <th>ID</th>
+            <th>Deployed On</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -30,6 +31,7 @@
           <tr>
           <td align="left">${i++}</td>
             <td><a href="@{Application.pattern(pattern.pattern_id)}">${pattern.pattern_id}</a></td>
+            <td>${Long.parseLong(pattern.date).asdate('dd MMMM yyyy hh:mm:ss')}</td>
             <td>
             	<a href="@{Application.pattern(pattern.pattern_id)}" class="btn" target="_blank">Details</a>&nbsp;
 				<a href="@{Application.doUndeployPattern(pattern.pattern_id)}" class="btn btn-danger">Undeploy</a>

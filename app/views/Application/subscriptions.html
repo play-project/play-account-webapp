@@ -22,6 +22,7 @@
           	<th>Subscription ID</th>
             <th>Subscribed To</th>
             <th>Subscriber</th>
+            <th>Date</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -31,6 +32,7 @@
           <td align="left"><a id="${s.subscription_id}">${s.subscription_id}</a></td>
             <td><a href="${s.resource}" target="_blank">${s.resource}</a></td>
             <td><a href="${s.subscriber}" target="_blank">${s.subscriber}</a></td>
+            <td>${Long.parseLong(s.date).asdate('dd MMMM yyyy hh:mm:ss')}</td>
             <td>
             	<a href="@{Application.doDeleteSubscription(s.subscription_id)}" class="btn btn-danger">Unsubscribe</a>&nbsp;
             </td>

@@ -21,8 +21,6 @@ package client.platform.v1;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlElement;
-
 /**
  * @author chamerling
  *
@@ -34,5 +32,7 @@ public class Pattern implements Serializable {
 	public String pattern_id;
 	
 	public String resource_url;
+
+	public String date;
 
 }
