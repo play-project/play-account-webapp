@@ -28,6 +28,7 @@
             <td><a href="${stream.id}" target="_blank">${stream.id}<i class="icon-share-alt"></i></a></td>
             <td>
             	<a href="@{Application.createSubscription}?resource=${stream.id}" class="btn">Subscribe</a>&nbsp;
+            	<a href="@{Application.publish}?resource=${stream.id}" class="btn">Publish</a>&nbsp;
             </td>
           </tr>
         #{/list}

@@ -300,7 +300,7 @@ public class Application extends Controller {
 	}
 
 	public static void doDeployPattern() {
-		flash.success("Pattern has been deployed");
+		flash.success("TODO : Pattern has been deployed");
 		patterns();
 	}
 
@@ -381,9 +381,38 @@ public class Application extends Controller {
 	 * Publish message from a web page...
 	 */
 	public static void publish() {
-		flash.error("Publish : TODO");
-		// get the resources where we can publish
-		index();
+		List<Stream> streams = null;
+		try {
+			streams = PlatformClient.streams(getUser());
+		} catch (ApplicationException e) {
+			e.printStackTrace();
+			flash.error("Error while getting available streams %s",
+					e.getMessage());
+			index();
+		}
+		render(streams);
+	}
+
+	public static void doPublish(
+			@Required(message = "Stream is required") String stream,
+			@Required(message = "Message content is required") String message) {
+
+		validation.required(stream);
+		validation.required(message);
+
+		if (validation.hasErrors()) {
+			params.flash();
+			validation.keep();
+			publish();
+		}
+
+		try {
+			PlatformClient.publish(getUser(), stream, message);
+		} catch (ApplicationException e) {
+			e.printStackTrace();
+		}
+		flash.success("Message published into the platform");
+		publish();
 	}
 
 	// Private stuff

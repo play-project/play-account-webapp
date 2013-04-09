@@ -145,9 +145,10 @@ public class PlatformClient {
 	public static boolean unsubscribe(User user, String subscriptionID)
 			throws ApplicationException {
 
-		WSRequest request = WS.url(getEndpoint() + "subscriptions/" + subscriptionID)
-				.setHeader("Authorization", "Bearer " + user.apiToken);
-		
+		WSRequest request = WS.url(
+				getEndpoint() + "subscriptions/" + subscriptionID).setHeader(
+				"Authorization", "Bearer " + user.apiToken);
+
 		HttpResponse response = null;
 		try {
 			response = request.delete();
@@ -207,6 +208,29 @@ public class PlatformClient {
 			Logger.debug("Status %s", response.getStatusText());
 			throw new ApplicationException("Bad request : "
 					+ response.getStatusText());
+		}
+	}
+
+	/**
+	 * Push a message to the platform
+	 * 
+	 * @param user
+	 * @param stream
+	 * @param message
+	 * @throws ApplicationException
+	 */
+	public static void publish(User user, String stream, String message)
+			throws ApplicationException {
+		WSRequest request = WS.url(getEndpoint() + "publish")
+				.setHeader("Authorization", "Bearer " + user.apiToken)
+				.setParameter("resource", stream)
+				.setParameter("message", message)
+				.mimeType("application/x-www-form-urlencoded");
+
+		try {
+			request.postAsync();
+		} catch (RuntimeException e) {
+			throw new ApplicationException("Can not connect to service");
 		}
 	}
 

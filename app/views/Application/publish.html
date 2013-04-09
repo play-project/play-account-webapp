@@ -1,0 +1,45 @@
+#{extends 'main.html' /} #{set title:'Publish' /}
+
+<ul class="breadcrumb">
+  <li><a href="@{Application.index()}">Home</a> <span class="divider">/</span></li>
+  <li class="active">Publish</li>
+</ul>
+
+#{if streams}
+	<div class="alert alert-info">
+  		<button type="button" class="close" data-dismiss="alert">&times;</button>
+  		<h4>Info!</h4>
+  		You can publish to ${streams.size()} stream${streams.pluralize('', 's')}
+	</div>
+	
+	<div class="row">
+	<div class="span2">&nbsp;</div>
+	<div class="span8 well">
+	  	<legend>Publish a new Message</legend>
+	    <form accept-charset="UTF-8" action="@{Application.doPublish()}" method="post">
+	        <label>Target Resource ID</label>
+	        <select name="stream" class="span8">
+			#{list streams, as : 'stream'}
+				<option>${stream.id}</option>
+        	#{/list}
+			</select>
+	        <label>Message</label>
+	        <textarea name="message" class="span8" rows="10"></textarea>
+	        <div class="row">
+	        	<div class="span8">
+	        		<button class="btn btn-success" type="submit">Publish</button>&nbsp;<a href="@{Application.index()}" class="btn btn-warning" type="submit">Cancel</a>
+	    		</div>
+	    	</div>
+	    </form>
+	</div>
+	<div class="span2">&nbsp;</div>
+	</div>
+	
+#{/if}
+#{else}
+	<div class="alert alert-error">
+  		<button type="button" class="close" data-dismiss="alert">&times;</button>
+  		<h4>Info!</h4>
+  		You do not have access to any stream, check your groups<a href="@{Application.groups}"><i class="icon-share-alt"></i></a>
+	</div>
+#{/else}
