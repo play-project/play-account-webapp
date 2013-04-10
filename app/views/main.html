@@ -86,6 +86,7 @@
 
 	<div class="container">
 	
+	#{if playuser}
 	<div class="row">
         <div class="span3">
           <div class="well sidebar-nav">
@@ -103,7 +104,8 @@
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
-        <div class="span9">
+        <div class="span9">    
+    #{/if}
 	
 		#{if flash.success}
 		<div class="alert alert-success">
@@ -111,6 +113,7 @@
 			<strong>${flash.success}</strong>
 		</div>
 		#{/if}
+		
 		#{if flash.error}
 		<div class="alert alert-error">
 			<button type="button" class="close" data-dismiss="alert">×</button>
@@ -123,17 +126,19 @@
 			<button type="button" class="close" data-dismiss="alert">×</button>
 	       	<p><strong>Some values are invalid, please fix them...</strong></p>
 	       	<ul>
-	        		#{errors}
-	      			<li>${error}</li>
-	  				#{/errors}
-	  			</ul>
-	     	</div>
+	       		#{errors}
+	    		<li>${error}</li>
+	  			#{/errors}
+	  		</ul>
+	     </div>
 		#{/ifErrors}
 	
 		#{doLayout /}
-      
+    
+    #{if playuser}
+  		</div>
   	</div>
-  	</div>
+  	#{/if}
   	</div>
   	
   	<script src="@{'/public/assets/js/jquery.js'}"></script>
