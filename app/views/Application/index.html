@@ -8,6 +8,8 @@
 <!-- TODO : A real activity service with links to real stuff... -->
 #{if resources}
 	#{list resources, as : 'r'}
+	%{ since = new Date(Long.parseLong(r.date)).since()}%
+	%{ date = Long.parseLong(r.date).asdate('dd MMMM yyyy hh:mm:ss')}%
 	<div class="media">
 	  <a class="pull-left" href="#">
 	    <img class="media-object" width="50" height="50" src="${playuser.avatarURL}">
@@ -16,14 +18,16 @@
 		<blockquote>
 			#{if r.name == 'group'}
 	  		<p>You joined group <a href="#">${r.uri}</a></p>
+	  		<small><a href="@{Application.groups}">More...</a> ${since}, ${date}</small>
 	  		#{/if}
 	  		#{if r.name == 'pattern'}
 	  		<p>You deployed a new pattern <a href="#">${r.uri}</a></p>
+	  		<small><a href="@{Application.patterns}">More...</a> ${since}, ${date}</small>
 	  		#{/if}
 	  		#{if r.name == 'subscription'}
 	  		<p>You subscribed to a resource <a href="#">${r.uri}</a></p>
+	  		<small><a href="@{Application.subscriptions}">More...</a> ${since}, ${date}</small>
 	  		#{/if}
-	  		<small>${new Date(Long.parseLong(r.date)).since()} (${Long.parseLong(r.date).asdate('dd MMMM yyyy hh:mm:ss')})</small>
 		</blockquote>
 	  </div>
 	</div>
