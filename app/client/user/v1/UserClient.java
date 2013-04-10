@@ -41,7 +41,6 @@ public class UserClient {
 		
 		if (response.getStatus() == 200) {
 			JsonElement json = response.getJson();
-			System.out.println(response.toString());
 			Gson gson = new Gson();
 			return gson.fromJson(json, User.class);
 		} else {

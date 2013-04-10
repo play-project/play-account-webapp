@@ -79,6 +79,20 @@ public class ResourceHelper {
 			return Lists.newArrayList();
 		}
 
+		List<Resource> system = Lists.newArrayList();
+
+		// add date if any...
+		// hack the resource.... use URI to push a message...
+		Resource joined = new Resource();
+		if (user.date != null) {
+			joined.date = user.date;
+		} else {
+			joined.date = "0";
+		}
+		joined.name = "system";
+		joined.uri = "You joined Play!";
+		system.add(joined);
+
 		ImmutableSortedSet<Resource> r = ImmutableSortedSet
 				.orderedBy(new Comparator<Resource>() {
 					public int compare(Resource r1, Resource r2) {
@@ -90,7 +104,9 @@ public class ResourceHelper {
 						}
 						return -1;
 					}
-				}).addAll(user.groups).addAll(user.resources).build();
+				}).addAll(user.groups).addAll(user.resources).addAll(system)
+				.build();
+
 		return Lists.newArrayList(r);
 	}
 

@@ -52,6 +52,8 @@ public class User implements Serializable {
 	
 	public String apiToken;
 
+	public String date;
+
 	/**
 	 * Providers accounts
 	 */

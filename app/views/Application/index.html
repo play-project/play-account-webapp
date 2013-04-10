@@ -28,6 +28,10 @@
 	  		<p>You subscribed to a resource <a href="#">${r.uri}</a></p>
 	  		<small><a href="@{Application.subscriptions}">More...</a> ${since}, ${date}</small>
 	  		#{/if}
+	  		#{if r.name == 'system'}
+	  		<p>${r.uri}</p>
+	  		<small>${since}, ${date}</small>
+	  		#{/if}
 		</blockquote>
 	  </div>
 	</div>
