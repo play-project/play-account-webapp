@@ -27,6 +27,7 @@ import play.Play;
 import play.libs.WS;
 import play.libs.WS.HttpResponse;
 import play.libs.WS.WSRequest;
+import client.Constants;
 import client.user.v1.User;
 
 import com.google.common.collect.Lists;
@@ -286,7 +287,7 @@ public class PlatformClient {
 	}
 
 	public static String getEndpoint() {
-		return Play.configuration.getProperty("play.platform.url");
+		return Play.configuration.getProperty(Constants.PLAY_PLATFORM_ENDPOINT);
 	}
 
 }

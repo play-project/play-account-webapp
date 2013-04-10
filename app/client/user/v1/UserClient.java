@@ -13,6 +13,7 @@ import play.libs.WS;
 import play.libs.WS.HttpResponse;
 import play.libs.WS.WSRequest;
 import securesocial.provider.SocialUser;
+import client.Constants;
 import client.platform.v1.Resource;
 
 import com.google.gson.Gson;
@@ -28,7 +29,8 @@ public class UserClient {
 	}
 
 	public static User getUserFromID(String id) throws ApplicationException {
-		WSRequest request = WS.url(getEndpoint() + "users/%s", id);
+		WSRequest request = WS.url(getEndpoint() + "users/%s", id).setHeader(
+				"Authorization", "Bearer " + getToken());
 
 		HttpResponse response = null;
 		try {
@@ -49,8 +51,10 @@ public class UserClient {
 	}
 
 	public static User userpass(String username, String password) throws ApplicationException {
-		WSRequest request = WS.url(getEndpoint()
-				+ "users/basicauth?login=%s&password=%s", username, password);
+		WSRequest request = WS.url(
+				getEndpoint() + "users/basicauth?login=%s&password=%s",
+				username, password).setHeader("Authorization",
+				"Bearer " + getToken());
 
 		HttpResponse response = null;
 		try {
@@ -61,8 +65,6 @@ public class UserClient {
 		
 		if (response.getStatus() == 200) {
 			JsonElement json = response.getJson();
-			System.out.println(json.toString());
-
 			Gson gson = new Gson();
 			return gson.fromJson(json, User.class);
 		} else {
@@ -72,8 +74,9 @@ public class UserClient {
 	}
 
 	public static User getUserFromProvider(String login, String provider) throws ApplicationException {
-		WSRequest request = WS.url(getEndpoint()
-				+ "users/query?login=%s&provider=%s", login, provider);
+		WSRequest request = WS.url(
+				getEndpoint() + "users/query?login=%s&provider=%s", login,
+				provider).setHeader("Authorization", "Bearer " + getToken());
 		
 		HttpResponse response = null;
 		try {
@@ -103,7 +106,8 @@ public class UserClient {
 
 		WSRequest request = WS.url(getEndpoint() + "users")
 				.setHeader("ContentType", "application/json")
-				.mimeType("application/json").body(gson.toJson(user));
+				.mimeType("application/json").body(gson.toJson(user))
+				.setHeader("Authorization", "Bearer " + getToken());
 
 		HttpResponse response = null;
 		try {
@@ -135,7 +139,8 @@ public class UserClient {
 		String endpoint = getEndpoint() + "users";
 		WSRequest request = WS.url(endpoint)
 				.setHeader("ContentType", "application/json")
-				.mimeType("application/json").body(gson.toJson(user));
+				.mimeType("application/json").body(gson.toJson(user))
+				.setHeader("Authorization", "Bearer " + getToken());
 		
 		HttpResponse response = null;
 		try {
@@ -168,8 +173,9 @@ public class UserClient {
 	public static void removeAccount(User user, String provider)
 			throws ApplicationException {
 		String endpoint = getEndpoint() + "users/%s/accounts";
-		WSRequest request = WS.url(endpoint, user.id).setParameter("provider",
-				provider);
+		WSRequest request = WS.url(endpoint, user.id)
+				.setParameter("provider", provider)
+				.setHeader("Authorization", "Bearer " + getToken());
 
 		HttpResponse response = null;
 
@@ -192,7 +198,8 @@ public class UserClient {
 	 * @return
 	 */
 	public static boolean exists(String username) throws ApplicationException {
-		WSRequest request = WS.url(getEndpoint() + "users/login/" + username);
+		WSRequest request = WS.url(getEndpoint() + "users/login/" + username)
+				.setHeader("Authorization", "Bearer " + getToken());
 
 		HttpResponse response = null;
 
@@ -230,7 +237,8 @@ public class UserClient {
 
 		WSRequest request = WS.url(getEndpoint() + "users")
 				.setHeader("ContentType", "application/json")
-				.mimeType("application/json").body(gson.toJson(bean));
+				.mimeType("application/json").body(gson.toJson(bean))
+				.setHeader("Authorization", "Bearer " + getToken());
 
 		HttpResponse response = null;
 		try {	
@@ -249,7 +257,8 @@ public class UserClient {
 	}
 
 	public static Group getGroup(String id) throws ApplicationException {
-		WSRequest request = WS.url(getEndpoint() + "groups/%s", id);
+		WSRequest request = WS.url(getEndpoint() + "groups/%s", id).setHeader(
+				"Authorization", "Bearer " + getToken());
 
 		HttpResponse response = null;
 		try {
@@ -273,7 +282,8 @@ public class UserClient {
 		Gson gson = new Gson();
 		WSRequest request = WS.url(getEndpoint() + "groups")
 				.setHeader("ContentType", "application/json")
-				.mimeType("application/json").body(gson.toJson(group));
+				.mimeType("application/json").body(gson.toJson(group))
+				.setHeader("Authorization", "Bearer " + getToken());
 
 		HttpResponse response = null;
 		try {
@@ -299,7 +309,8 @@ public class UserClient {
 	public static List<Group> getGroups(User user) throws ApplicationException {
 		List<Group> result = new ArrayList<Group>();
 		
-		WSRequest request = WS.url(getEndpoint() + "groups");
+		WSRequest request = WS.url(getEndpoint() + "groups").setHeader(
+				"Authorization", "Bearer " + getToken());
 
 		HttpResponse response = null;
 		try {
@@ -336,7 +347,8 @@ public class UserClient {
 		String endpoint = getEndpoint() + "users/%s/groups";
 		WSRequest request = WS.url(endpoint, user.id)
 				.setHeader("ContentType", "application/json")
-				.mimeType("application/json").body(gson.toJson(resource));
+				.mimeType("application/json").body(gson.toJson(resource))
+				.setHeader("Authorization", "Bearer " + getToken());
 		
 		HttpResponse response = null;
 		try {
@@ -369,7 +381,8 @@ public class UserClient {
 		String endpoint = getEndpoint() + "users/%s/groups";
 		WSRequest request = WS.url(endpoint, user.id)
 				.setHeader("ContentType", "application/json")
-				.mimeType("application/json").setParameter("uri", group);
+				.mimeType("application/json").setParameter("uri", group)
+				.setHeader("Authorization", "Bearer " + getToken());
 		
 		try {
 			request.delete();
@@ -379,7 +392,12 @@ public class UserClient {
 	}
 
 	private static final String getEndpoint() {
-		return Play.configuration.getProperty("play.governance.url");
+		return Play.configuration
+				.getProperty(Constants.PLAY_GOVERNANCE_ENDPOINT);
+	}
+
+	private static final String getToken() {
+		return Play.configuration.getProperty(Constants.PLAY_GOVERNANCE_TOKEN);
 	}
 
 }
