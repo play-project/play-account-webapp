@@ -23,6 +23,7 @@ import java.util.List;
 
 import models.ApplicationException;
 import play.Logger;
+import play.Play;
 import play.libs.WS;
 import play.libs.WS.HttpResponse;
 import play.libs.WS.WSRequest;
@@ -285,8 +286,7 @@ public class PlatformClient {
 	}
 
 	public static String getEndpoint() {
-		return "http://localhost:8080/play/api/v1/platform/";
+		return Play.configuration.getProperty("play.platform.url");
 	}
-
 
 }

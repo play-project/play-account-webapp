@@ -319,10 +319,6 @@ public class UserClient {
 		}
 	}
 
-	private static final String getEndpoint() {
-		return Play.configuration.getProperty("play.userservice.url");
-	}
-
 	/**
 	 * @param user
 	 * @param name
@@ -380,6 +376,10 @@ public class UserClient {
 		} catch (RuntimeException e) {
 			throw new ApplicationException("Can not connect to service");
 		}
+	}
+
+	private static final String getEndpoint() {
+		return Play.configuration.getProperty("play.governance.url");
 	}
 
 }
