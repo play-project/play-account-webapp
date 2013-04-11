@@ -1,33 +1,33 @@
 #{extends 'main.html' /} #{set title:'Home' /}
 
+<br><br><br><br>
 <div class="row">
 	<div class="span4">&nbsp;</div>
 	<div class="span4 well">
-	  	<legend>Login</legend>
+	  	<legend>Login to the Play Platform</legend>
 	    <form accept-charset="UTF-8" action="@{Application.doLogin()}" method="post">
 			<input class="span4" name="username" placeholder="Username" type="text"> 
 	        <input class="span4" name="password" placeholder="Password" type="password"> 
+	        
 	        <div class="row">
-	        <div class="span4">
-	        <button class="btn btn-warning" type="submit">Login</button>&nbsp;<a href="@{Registration.register()}" class="btn btn-warning" type="submit">Register</a>
-	    </div>
-	    </div>
+	        	<div class="span12">
+	        		<button class="btn btn-primary" type="submit">Login</button>&nbsp;
+	        
+	        		<div class="btn-group">
+	  					<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+	    					Sign In With...
+	    					<span class="caret"></span>
+	  					</a>
+	  						<ul class="dropdown-menu">
+	  							<li><a href="@{Authentifier.loginWith('github')}">Github</a></li>
+	  							<li><a href="@{Authentifier.loginWith('twitter')}">Twitter</a></li>
+	  							<li><a href="@{Authentifier.loginWith('googleoauth2')}">Google</a></li>
+	  							<li><a href="@{Authentifier.loginWith('facebook')}">Facebook</a></li>
+	  						<li></li>
+						  </ul>
+					</div>
+	    		</div>
+	    	</div>
 	    </form>
-	    <a href="">Forgot password?</a>
-	</div>
-</div>
-
-<div class="row">
-	<div class="span4">&nbsp;</div>
-	<div class="span4 well">
-	  	<legend>Sign In With</legend>
-	  	<div class="row">
-	  		<div class="span4" align="center">
-			    <a href="@{Authentifier.loginWith('github')}" class="btn btn-info">Github</a>
-			    <a href="@{Authentifier.loginWith('twitter')}" class="btn btn-info">Twitter</a>
-			    <a href="@{Authentifier.loginWith('googleoauth2')}" class="btn btn-info">Google</a>
-			    <a href="@{Authentifier.loginWith('facebook')}" class="btn btn-info">Facebook</a>
-		  	</div>
-		 </div>
 	</div>
 </div>

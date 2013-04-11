@@ -18,10 +18,10 @@
     </blockquote>
     
     #{if (client.user.v1.ResourceHelper.in(group.getGroupURI(), playuser.groups))}
-    <a href="@{Application.leaveGroup(group.getGroupURI())}" class="btn btn-danger">Leave</a>
+    <a href="@{Application.leaveGroup(group.getGroupURI())}" class="btn btn-danger">Leave...</a>
     #{/if}
     #{else} 
-    <a href="@{Application.joinGroup(group.getGroupURI())}" class="btn btn-info">&nbsp;Join&nbsp;</a>
+    <a href="@{Application.joinGroup(group.getGroupURI())}" class="btn btn-primary">&nbsp;Join&nbsp;</a>
   	#{/else}
   </div>
 </div>
