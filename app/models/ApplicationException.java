@@ -29,11 +29,6 @@ public class ApplicationException extends Exception {
 		super();
 	}
 
-	public ApplicationException(String message, Throwable cause,
-			boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
-
 	public ApplicationException(String message, Throwable cause) {
 		super(message, cause);
 	}
