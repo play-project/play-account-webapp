@@ -1,0 +1,24 @@
+#{extends 'main.html' /} #{set title:'Deploy Pattern' /}
+
+<ul class="breadcrumb">
+  <li><a href="@{Application.index()}">Home</a> <span class="divider">/</span></li>
+  <li><a href="@{Application.patterns()}">Patterns</a> <span class="divider">/</span></li>
+  <li class="active">Analyze</li>
+</ul>
+
+<div class="row">
+	<div class="span2">&nbsp;</div>
+	<div class="span8 well">
+	  	<legend>Analyze a Pattern</legend>
+	    <form accept-charset="UTF-8" action="@{Application.doAnalyzePattern()}" method="post">
+	        <label>Pattern</label>
+	        <textarea name="pattern" class="span8" rows="10">${flash.pattern}</textarea>
+	        <div class="row">
+	        	<div class="span8">
+	        		<button class="btn btn-primary" type="submit">Analyze!</button>&nbsp;<a href="@{Application.patterns()}" class="btn" type="submit">Cancel</a>
+	    		</div>
+	    	</div>
+	    </form>
+	</div>
+	<div class="span2">&nbsp;</div>
+</div>

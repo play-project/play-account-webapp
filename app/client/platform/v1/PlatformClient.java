@@ -266,6 +266,32 @@ public class PlatformClient {
 
 	/**
 	 * @param user
+	 * @param pattern
+	 * @throws ApplicationException
+	 */
+	public static void analyze(User user, String pattern)
+			throws ApplicationException {
+		WSRequest request = WS.url(getEndpoint() + "patterns/analyze")
+				.setHeader("Authorization", "Bearer " + user.apiToken)
+				.setParameter("pattern", pattern)
+				.mimeType("application/x-www-form-urlencoded");
+
+		HttpResponse response = null;
+		try {
+			response = request.post();
+		} catch (RuntimeException e) {
+			throw new ApplicationException("Can not connect to service");
+		}
+
+		if (response.getStatus() != 200) {
+			System.out.println(response.getString());
+			// TODO : Give back the error
+			throw new ApplicationException("Invalid pattern!!!");
+		}
+	}
+
+	/**
+	 * @param user
 	 * @param id
 	 * @throws ApplicationException
 	 */

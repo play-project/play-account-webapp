@@ -39,6 +39,8 @@ POST    /me/publish                             Application.createPublish
 GET     /me/patterns                            Application.patterns
 GET     /me/patterns/deploy                     Application.deployPattern
 POST    /me/patterns/deploy                     Application.doDeployPattern
+GET     /me/patterns/analyze                    Application.analyzePattern
+POST    /me/patterns/analyze                    Application.doAnalyzePattern
 GET     /me/patterns/undeploy/{id}              Application.doUndeployPattern
 GET     /me/patterns/{id}                       Application.pattern
 

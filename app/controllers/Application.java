@@ -324,6 +324,30 @@ public class Application extends Controller {
 		patterns();
 	}
 
+	public static void analyzePattern() {
+		render();
+	}
+
+	public static void doAnalyzePattern(
+			@Required(message = "Pattern is required") String pattern) {
+		validation.required(pattern);
+
+		if (validation.hasErrors()) {
+			params.flash();
+			validation.keep();
+			analyzePattern();
+		}
+
+		try {
+			PlatformClient.analyze(getUser(), pattern);
+		} catch (ApplicationException e) {
+			e.printStackTrace();
+			params.flash();
+			flash.error("Invalid pattern!");
+		}
+		analyzePattern();
+	}
+
 	public static void doUndeployPattern(
 			@Required(message = "Pattern ID required") String id) {
 		validation.required(id);
